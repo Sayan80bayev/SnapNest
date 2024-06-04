@@ -1,3 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins',sans-serif;
+}
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -10,4 +17,46 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+/* styles.css */
+
+:root {
+  --text: #091b16;
+  --background: #f4fbfa;
+  --primary: #176d52;
+  --primary2: #125c50;
+  --secondary: #63e9be;
+  --accent: #12ce93;
+}
+
+body.night-theme {
+  --text: #e4f6f1;
+  --background: #040b0a;
+  --primary: #92e8cd;
+  --secondary: #169c72;
+  --accent: #31edb1;
+}
+body{
+  color: var(--text);
+  background-color: var(--background);
+}
+
+
+.btn.btn-primary{
+  width: 100%;
+  color: var(--background);
+  font-size: 20px;
+  font-weight: 500;
+  padding-left: 0px;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  cursor: pointer;
+}
+.btn.btn-primary:hover{
+  border: 1px solid var(--primary);
+  background: var(--primary);
+}
+.btn.btn-primary:active {
+  border: 1px solid var(--primary2);
+ background: var(--primary2);
 }

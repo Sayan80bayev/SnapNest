@@ -1,0 +1,60 @@
+.form-auth{
+    max-width: 440px;
+    padding: 0 20px;
+    margin: 170px auto;
+  }
+  .wrapper{
+    width: 100%;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0px 4px 10px 1px rgba(0,0,0,0.1);
+  }
+  .wrapper .title{
+    height: 90px;
+    background: var(--accent);
+    border-radius: 5px 5px 0 0;
+    color: #fff;
+    font-size: 30px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .wrapper form{
+    padding: 30px 25px 25px 25px;
+  }
+  .wrapper form .row{
+    height: 45px;
+    margin-bottom: 15px;
+    position: relative;
+  }
+  .wrapper form .pass{
+    margin: -8px 0 20px 0;
+  }
+  .wrapper form .pass a{
+    color: #16a085;
+    font-size: 17px;
+    text-decoration: none;
+  }
+  .wrapper form .pass a:hover{
+    text-decoration: underline;
+  }
+  .wrapper form .signup-link{
+    text-align: center;
+    margin-top: 20px;
+    font-size: 17px;
+  }
+  .wrapper form .signup-link a{
+    color: #16a085;
+    text-decoration: none;
+  }
+  form .signup-link a:hover{
+    text-decoration: underline;
+  }
+  .form-floating label{
+    color: #16a085;
+  }
+  body{
+    color: var(--text);
+    background-color: var(--secondary);
+  }
