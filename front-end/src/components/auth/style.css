@@ -1,5 +1,5 @@
 .form-auth{
-    max-width: 440px;
+    width: 440px;
     padding: 0 20px;
     margin: 170px auto;
   }
@@ -32,7 +32,7 @@
     margin: -8px 0 20px 0;
   }
   .wrapper form .pass a{
-    color: #16a085;
+    color:var(--accent);
     font-size: 17px;
     text-decoration: none;
   }
@@ -45,16 +45,21 @@
     font-size: 17px;
   }
   .wrapper form .signup-link a{
-    color: #16a085;
+    color: var(--accent);
     text-decoration: none;
   }
   form .signup-link a:hover{
     text-decoration: underline;
   }
   .form-floating label{
-    color: #16a085;
+    color: var(--accent);
   }
-  body{
+  #auth{
+    display: flex;
+    height: 100vh;
     color: var(--text);
     background-color: var(--secondary);
+  }
+  #auth-btn{
+    width: 100%;
   }

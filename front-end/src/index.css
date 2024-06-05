@@ -21,12 +21,12 @@ code {
 /* styles.css */
 
 :root {
-  --text: #091b16;
-  --background: #f4fbfa;
-  --primary: #176d52;
-  --primary2: #125c50;
-  --secondary: #63e9be;
-  --accent: #12ce93;
+  --text: #160c18;
+--background: #f2e5f6;
+--primary: #651976;
+--primary2: #601571;
+--secondary: #d96ff1;
+--accent: #ae01d5;
 }
 
 body.night-theme {
@@ -43,11 +43,10 @@ body{
 
 
 .btn.btn-primary{
-  width: 100%;
+  padding: 10px;
   color: var(--background);
   font-size: 20px;
   font-weight: 500;
-  padding-left: 0px;
   background: var(--accent);
   border: 1px solid var(--accent);
   cursor: pointer;
@@ -59,4 +58,28 @@ body{
 .btn.btn-primary:active {
   border: 1px solid var(--primary2);
  background: var(--primary2);
+}
+.header{
+  background-color: var(--accent);
+}
+.header a{
+  color: var(--background);
+}
+.hero{
+  margin-top: 100px;
+  height: 400px;
+  padding: 20px;
+}
+.hero > .row{
+  height: 100%;
+  align-items: center ;
+}
+.hero video{
+  width: 50%;
+}
+.hero h1{
+  font-size: 60px;
+}
+.hero video{
+  border-radius: 40px;
 }
