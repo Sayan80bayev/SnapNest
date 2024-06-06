@@ -1,0 +1,50 @@
+#chat-main{
+    background-color: var(--background);
+    height: 100vh;
+    overflow: hidden;
+}
+#send{
+    width: 40px;
+    height: 40px;
+    padding: 0 0 1px 3px;
+    border-radius: 50%;
+}
+.inputMessage{
+    width: 60%;
+    height: 40px;
+    /* height: max-content; */
+    /* max-height: 160px; */
+    border-radius: 20px;
+    padding: 8px 12px 8px 20px;
+    border: none;
+    /* -webkit-appearance: none;  */
+    outline: none;         
+    border: none; 
+    resize:none;
+    overflow-y: auto;}
+.form-message{
+    padding: 20px;
+    align-items: center;
+}
+  /* Target the scrollbar itself */
+::-webkit-scrollbar {
+    width: 0px;       /* Width of the entire scrollbar */
+  }
+  
+  /* Target the track (the background of the scrollbar) */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;  /* Background color of the track */
+    border-radius: 4px;   /* Rounded corners */
+  }
+  
+  /* Target the thumb (the draggable part of the scrollbar) */
+  ::-webkit-scrollbar-thumb {
+    background: #888;     /* Color of the thumb */
+    border-radius: 4px;   /* Rounded corners */
+  }
+  
+  /* Optional: Change the thumb color on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+  }
+  
