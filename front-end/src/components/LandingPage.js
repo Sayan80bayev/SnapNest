@@ -1,5 +1,6 @@
 import React from "react";
-
+import UserReviews from "./UserReviews";
+import Pricing from "./Pricing";
 export default function LandingPage() {
   return (
     <main id="landingPage">
@@ -27,22 +28,24 @@ export default function LandingPage() {
               <h2>Easy posting system</h2>
             </div>
           </div>
-          <div className="mosaic-item tall">
-            <img src="image1.jpg" alt="Image for Feature 2" />
-            <h3>Feature 2</h3>
-          </div>
           <div className="mosaic-item" id="message">
             <div className="row">
               <h2>Instant messaging</h2>
             </div>
           </div>
-          <div className="mosaic-item">Feature 4</div>
-          <div className="mosaic-item">Feature 5</div>
-          <div className="mosaic-item">Feature 6</div>
-          <div className="mosaic-item">Feature 7</div>
-          <div className="mosaic-item">Feature 8</div>
-          {/* ... more mosaic items with different content and classes ... */}
+          <div className="mosaic-item" id="community">
+            <div className="row">
+              <h2>Communities of Interest</h2>
+            </div>
+          </div>
+          <div className="mosaic-item" id="security">
+            <div className="row">
+              <h2>Security and privacy</h2>
+            </div>
+          </div>
         </div>
+        {/* <UserReviews /> */}
+        <Pricing />
       </div>
     </main>
   );
