@@ -4,8 +4,7 @@ import styled from "styled-components";
 const ChatContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 70%;
-  height: 500px; /* Adjust the height as needed */
+  width: 100%;
   padding: 15px;
   overflow-y: auto; /* Make the chat scrollable */
 `;
@@ -19,7 +18,7 @@ const Message = styled.div`
     justify-content: flex-end; /* Align user messages to the right */
 
     .message-bubble {
-      background-color: #0084ff; /* User message background */
+      background-color: var(--accent); /* User message background */
       color: white;
       margin-left: 10px;
     }

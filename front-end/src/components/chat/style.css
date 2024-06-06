@@ -1,7 +1,8 @@
 #chat-main{
+  display: flex;
     background-color: var(--background);
     height: 100vh;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 #send{
     width: 40px;
@@ -10,7 +11,7 @@
     border-radius: 50%;
 }
 .inputMessage{
-    width: 60%;
+    width: 80%;
     height: 40px;
     /* height: max-content; */
     /* max-height: 160px; */
@@ -21,8 +22,12 @@
     outline: none;         
     border: none; 
     resize:none;
-    overflow-y: auto;}
+    overflow-y: auto;
+    display: inline-block;
+  }
 .form-message{
+  /* flex-wrap: nowrap; */
+  justify-content: space-between;
     padding: 20px;
     align-items: center;
 }
@@ -46,5 +51,12 @@
   /* Optional: Change the thumb color on hover */
   ::-webkit-scrollbar-thumb:hover {
     background: #555; 
+  }
+  .chat-window{
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    width: 60%;
+    height: 100vh;
   }
   
