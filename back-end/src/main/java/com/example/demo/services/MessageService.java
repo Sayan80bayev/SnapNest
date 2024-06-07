@@ -42,8 +42,8 @@ public class MessageService {
 
     public MessageDTO mapToDTO(Message message) {
         return new MessageDTO(
-                message.getSender().getUsername(),
-                message.getRecipient().getUsername(),
+                message.getSender().getName(),
+                message.getRecipient().getName(),
                 message.getContent(),
                 message.getTimestamp());
     }

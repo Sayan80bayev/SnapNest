@@ -13,29 +13,29 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import com.example.demo.enums.*;
 
 @Entity
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "app_user")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Enumerated(EnumType.STRING)
     private Role role;
-    private String username;
+    private String name;
     private String email;
     private String password;
-
-    public User() {
-    }
-
-    public User(String username, String email, String password) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -63,7 +63,7 @@ public class User implements UserDetails {
     }
 
     public String getName() {
-        return username;
+        return name;
     }
 
     @Override

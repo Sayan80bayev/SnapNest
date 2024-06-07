@@ -3,7 +3,32 @@ import "./style.css";
 import ChatMessages from "./ChatMessages";
 import ChatSelector from "./ChatSelector";
 import UserInfo from "./UserInfo";
+import WebSocketService from "../config/WebSocketService";
 export default function () {
+  const [messages, setMessages] = useState([]);
+  const [sender, setSender] = useState("");
+  const [recipient, setRecipient] = useState("");
+  const [content, setContent] = useState("");
+
+  useEffect(() => {
+    WebSocketService.connect((message) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+    });
+    return () => {
+      WebSocketService.disconnect();
+    };
+  }, []);
+
+  const handleSendMessage = () => {
+    const message = {
+      sender,
+      recipient,
+      content,
+      timestamp: new Date().toISOString(),
+    };
+    WebSocketService.sendMessage(message);
+    setContent("");
+  };
   return (
     <main id="chat-main">
       <ChatSelector />

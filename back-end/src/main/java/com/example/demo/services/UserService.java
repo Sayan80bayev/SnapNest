@@ -12,9 +12,13 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
+
     public UserDTO registerUser(UserDTO userDTO) {
         User user = new User();
-        user.setUsername(userDTO.getUsername());
+        user.setName(userDTO.getUsername());
         user.setEmail(userDTO.getEmail());
         user.setPassword("default_password"); // Replace with real password handling
         userRepository.save(user);
