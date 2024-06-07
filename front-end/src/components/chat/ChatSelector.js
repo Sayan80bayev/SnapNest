@@ -1,6 +1,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
+const getRandomColor = () => {
+  const letters = "0123456789ABCDEF";
+  let color = "#";
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+};
+
 const ChatSelectorBar = styled.div`
   width: 20%;
   background-color: #f8f8f8;
@@ -22,10 +31,17 @@ const ChatItem = styled.div`
   }
 `;
 
-const Avatar = styled.img`
+const Avatar = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  background-color: ${(props) => props.bgColor};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
   margin-right: 10px;
 `;
 
@@ -39,7 +55,7 @@ const ChatPreview = styled.div`
 `;
 
 const UnreadCount = styled.div`
-  background-color: #ff4500; /* Example unread indicator color */
+  background-color: var(--primary); /* Example unread indicator color */
   color: white;
   font-size: 12px;
   padding: 2px 6px;
@@ -53,13 +69,13 @@ const ChatSelector = () => {
   const chatData = [
     {
       title: "Поднятие Уровня в О...",
-      avatar: "path/to/avatar.jpg", // Replace with actual avatar image
+      avatar: null, // Replace with actual avatar image if available
       preview: "Graphite: Пипец",
       unreadCount: 10,
     },
     {
       title: "Нархоз | чат",
-      avatar: "path/to/avatar2.jpg", // Replace with actual avatar image
+      avatar: null, // Replace with actual avatar image if available
       preview: null, // No preview message
       unreadCount: 457,
     },
@@ -78,9 +94,20 @@ const ChatSelector = () => {
           active={activeChat === index}
           onClick={() => handleChatClick(index)}
         >
-          <Avatar src={chat.avatar} alt={chat.title} />
-          <ChatTitle>{chat.title}</ChatTitle>
-          {chat.preview && <ChatPreview>{chat.preview}</ChatPreview>}
+          <Avatar
+            bgColor={getRandomColor()}
+            style={{ width: "40px", height: "40px" }}
+          >
+            {chat.avatar ? (
+              <img src={chat.avatar} alt={chat.title} />
+            ) : (
+              chat.title[0].toUpperCase()
+            )}
+          </Avatar>
+          <ChatTitle>
+            {chat.title}
+            {chat.preview && <ChatPreview>{chat.preview}</ChatPreview>}
+          </ChatTitle>
           {chat.unreadCount > 0 && (
             <UnreadCount>{chat.unreadCount}</UnreadCount>
           )}

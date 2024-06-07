@@ -53,6 +53,8 @@
     background: #555; 
   }
   .chat-window{
+    background-color: #e5e5e5;
+    background-image: url('/public/background.svg');
     display: flex;
     flex-direction: column;
     justify-content: end;

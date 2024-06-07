@@ -121,17 +121,18 @@ const BlockButton = styled.button`
   color: white;
   padding: 10px 15px;
   border: none;
-  border-radius: 5px;
+  border-radius: 15px;
   cursor: pointer;
   margin-top: 20px;
 `;
 
 const AddContactButton = styled.button`
+  width: 100%;
   background-color: #28a745; /* Green color */
   color: white;
   padding: 10px 15px;
   border: none;
-  border-radius: 5px;
+  border-radius: 15px;
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.3s;
@@ -155,14 +156,16 @@ const UserInfo = () => {
         <CloseButton>&times;</CloseButton>
       </Header>
       <InfoItem>
-        <FaInfo />
+        <FaInfo style={{ fill: "var(--accent)" }} />
         @hasan_nurlanov
       </InfoItem>
       <InfoItem>
-        <AddContactButton>ADD TO CONTACTS</AddContactButton>
+        <AddContactButton className="mt-3 mb-3 btn btn-primary">
+          ADD TO CONTACTS
+        </AddContactButton>
       </InfoItem>
       <InfoItem>
-        <FaBell />
+        <FaBell style={{ fill: "var(--accent)" }} />
         Notifications
         <ToggleSwitch>
           <input type="checkbox" />
@@ -170,30 +173,30 @@ const UserInfo = () => {
         </ToggleSwitch>
       </InfoItem>
       <InfoItem>
-        <FaFileAlt />
+        <FaFileAlt style={{ fill: "var(--accent)" }} />
         432 поста
       </InfoItem>
       <InfoItem>
-        <FaCamera />
+        <FaCamera style={{ fill: "var(--accent)" }} />
         89 фото
       </InfoItem>
       <InfoItem>
-        <FaVideo />
+        <FaVideo style={{ fill: "var(--accent)" }} />
         54 видео
       </InfoItem>
       <InfoItem>
-        <FaFileAlt />
+        <FaFileAlt style={{ fill: "var(--accent)" }} />
         12 файлов
       </InfoItem>
       <InfoItem>
-        <FaLink />
+        <FaLink style={{ fill: "var(--accent)" }} />
         35 общих ссылок
       </InfoItem>
       <InfoItem>
-        <FaMicrophone />
+        <FaMicrophone style={{ fill: "var(--accent)" }} />
         12 голосовых сообщений
       </InfoItem>
-      <BlockButton>Block User</BlockButton>
+      <BlockButton className="btn btn-secondary">Block User</BlockButton>
     </UserInfoContainer>
   );
 };

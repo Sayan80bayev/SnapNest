@@ -59,9 +59,22 @@ body{
   border: 1px solid var(--accent);
   cursor: pointer;
 }
+.btn.btn-secondary{
+  padding: 10px;
+  color: var(--accent);
+  font-size: 20px;
+  font-weight: 500;
+  background: var(--background);
+  border: 3px solid var(--secondary);
+  cursor: pointer;
+}
 .btn.btn-primary:hover{
   border: 1px solid var(--primary);
   background: var(--primary);
+}
+.btn.btn-secondary:hover{
+  background: var(--secondary);
+  color: white;
 }
 .btn.btn-primary:active {
   border: 1px solid var(--primary2);
