@@ -6,7 +6,7 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [message, setMessage] = useState(location.state || "");
+  const [message, setMessage] = useState();
 
   const [formData, setFormData] = useState();
   const handleForm = (e) => {
@@ -17,10 +17,10 @@ export default function Login() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.email || !formData.password) {
+    if (!formData || !formData.email || !formData.password) {
       setMessage({
-        status: "error",
-        message: "Email and password are required",
+        status: "__ERROR__",
+        value: "Email and password are required",
       });
       return;
     }
@@ -31,14 +31,14 @@ export default function Login() {
         return navigate("/chat");
       } else {
         setMessage({
-          status: "error",
-          message: "Wrong credentials",
+          status: "__ERROR__",
+          value: "Wrong credentials",
         });
       }
     } catch (error) {
       setMessage({
-        status: "error",
-        message: "Authentication failed",
+        status: "__ERROR__",
+        value: "Authentication failed",
       });
     }
   };
@@ -50,6 +50,9 @@ export default function Login() {
             <span>Login Form</span>
           </div>
           <form action="#">
+            {message && message?.status == "__ERROR__" && (
+              <p className="alert alert-danger">{message.value}</p>
+            )}
             <div class="form-floating mb-3">
               <input
                 name="email"
