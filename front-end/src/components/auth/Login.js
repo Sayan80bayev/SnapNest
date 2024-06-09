@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { handleLogin } from "../api/api";
 
 export default function Login() {
@@ -84,7 +84,7 @@ export default function Login() {
               Login
             </button>
             <div className="signup-link">
-              Not a member? <a href="#">Signup now</a>
+              Not a member? <Link to={"/register"}>Signup now</Link>
             </div>
           </form>
         </div>
