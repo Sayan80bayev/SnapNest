@@ -64,8 +64,8 @@ public class MessageService {
                 messageDTO.getTimestamp());
     }
 
-    public List<Message> getReceivedMessages(String username) {
-        User recipient = userRepository.findByEmail(username).orElse(null);
+    public List<Message> getReceivedMessages(String email) {
+        User recipient = userRepository.findByEmail(email).orElse(null);
         if (recipient == null) {
             throw new IllegalArgumentException("Recipient not found");
         }

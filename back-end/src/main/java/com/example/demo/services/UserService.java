@@ -3,6 +3,9 @@ package com.example.demo.services;
 import com.example.demo.dtos.UserDTO;
 import com.example.demo.entities.User;
 import com.example.demo.repositories.UserRepository;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,10 @@ public class UserService {
 
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElse(null);
+    }
+
+    public List<User> findChats(String email) {
+        return userRepository.findChats(email);
     }
 
     public UserDTO mapToDto(User user) {

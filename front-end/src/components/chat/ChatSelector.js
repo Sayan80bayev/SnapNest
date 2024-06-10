@@ -63,7 +63,7 @@ const UnreadCount = styled.div`
   margin-left: 5px;
 `;
 
-const ChatSelector = () => {
+const ChatSelector = ({ chatData }) => {
   const [activeChat, setActiveChat] = useState(null);
 
   const chatData = [

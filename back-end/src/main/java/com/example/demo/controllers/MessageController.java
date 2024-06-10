@@ -20,9 +20,9 @@ public class MessageController {
         return messageService.sendMessage(messageDTO);
     }
 
-    @GetMapping("/received/{username}")
-    public List<MessageDTO> getReceivedMessages(@PathVariable String username) {
-        return messageService.getReceivedMessages(username).stream()
+    @GetMapping("/received/{email}")
+    public List<MessageDTO> getReceivedMessages(@PathVariable String email) {
+        return messageService.getReceivedMessages(email).stream()
                 .map(messageService::mapToDTO)
                 .collect(Collectors.toList());
     }
