@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import axios from "axios";
 
 const ChatContainer = styled.div`
   display: flex;
@@ -38,22 +39,16 @@ const Message = styled.div`
   }
 `;
 
-const ChatMessages = () => {
-  const messages = [
-    { text: "Hello there!", user: "other" },
-    { text: "Hi! How are you?", user: "user" },
-    { text: "I'm doing well. What about you?", user: "other" },
-    { text: "I'm great, thanks for asking!", user: "user" },
-    // ... more messages
-  ];
-
+const ChatMessages = ({ messages }) => {
+  if (!messages) return <>Loading</>;
   return (
     <ChatContainer>
-      {messages.map((message, index) => (
-        <Message key={index} className={message.user}>
-          <div className="message-bubble">{message.text}</div>
-        </Message>
-      ))}
+      {messages &&
+        messages.map((message, index) => (
+          <Message key={index} className={message.user}>
+            <div className="message-bubble">{message.text}</div>
+          </Message>
+        ))}
     </ChatContainer>
   );
 };

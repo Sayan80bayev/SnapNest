@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dtos.ChatDTO;
 import com.example.demo.dtos.UserDTO;
+import com.example.demo.entities.User;
 import com.example.demo.services.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,7 +28,13 @@ public class UserController {
     }
 
     @GetMapping("/getChats")
-    public List<UserDTO> getChats(@RequestParam("email") String email) {
-        return service.findChats(email).stream().map(c -> service.mapToDto(c)).collect(Collectors.toList());
+    public List<ChatDTO> getChats(@RequestParam("email") String email) {
+        List<User> l = service.findChats(email);
+        List<ChatDTO> c = new ArrayList<>();
+        for (User u : l) {
+            c.add(ChatDTO.builder().username(u.getName()).title(u.getEmail()).unreadCount(1).email(u.getEmail())
+                    .preview(u.getEmail()).build());
+        }
+        return c;
     }
 }

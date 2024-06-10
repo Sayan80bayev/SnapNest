@@ -1,59 +1,119 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./style.css";
 import ChatMessages from "./ChatMessages";
 import ChatSelector from "./ChatSelector";
 import UserInfo from "./UserInfo";
+import { Client } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
 import WebSocketService from "../config/WebSocketService";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 export default function ChatApp() {
   const [messages, setMessages] = useState([]);
-  const [sender, setSender] = useState("currentUser"); // Replace with actual user info
-  const [recipient, setRecipient] = useState("");
+  const [sender, setSender] = useState("");
+  const [recipient, setRecipient] = useState("sayan123serv@gmail.com"); // Replace with dynamic recipient if needed
   const [content, setContent] = useState("");
+  const [chatData, setChatData] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const clientRef = useRef(null);
+
+  const token = localStorage.getItem("authToken");
 
   useEffect(() => {
-    WebSocketService.connect((message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
-    });
+    async function fetchChats() {
+      try {
+        const result = await axios.get(
+          `http://localhost:3001/api/user/getChats?email=${
+            jwtDecode(token).sub
+          }`
+        );
+        setChatData(result.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    fetchChats();
+    setSender(jwtDecode(token).sub);
+
     return () => {
-      WebSocketService.disconnect();
+      if (clientRef.current) {
+        clientRef.current.deactivate();
+      }
+    };
+  }, [token]);
+
+  useEffect(() => {
+    const socket = new SockJS("http://localhost:3001/ws");
+    const client = new Client({
+      webSocketFactory: () => socket,
+      onConnect: () => {
+        console.log("Connected to WebSocket server");
+        setIsConnected(true);
+        client.subscribe("/topic/messages", (message) => {
+          if (message.body) {
+            setMessages((prevMessages) => [...prevMessages, message.body]);
+          }
+        });
+      },
+      onDisconnect: () => {
+        console.log("Disconnected from WebSocket server");
+        setIsConnected(false);
+      },
+      debug: (str) => {
+        console.log(str);
+      },
+    });
+
+    client.activate();
+    clientRef.current = client;
+
+    return () => {
+      if (clientRef.current) {
+        clientRef.current.deactivate();
+      }
     };
   }, []);
-
-  useEffect(() => {
-    if (selectedChat) {
-      axios
-        .get(`/api/messages/received/${selectedChat}`)
-        .then((response) => {
-          setMessages(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching messages:", error);
-        });
-    }
-  }, [selectedChat]);
 
   const handleSendMessage = (event) => {
     event.preventDefault();
     const message = {
       sender,
-      recipient: selectedChat,
+      recipient,
       content,
       timestamp: new Date().toISOString(),
     };
-    WebSocketService.sendMessage(message);
-    setContent("");
+    async function send() {
+      try {
+        const response = await axios.post(
+          "http://localhost:3001/api/messages/send",
+          message
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    send();
+    console.log(message);
+    if (clientRef.current && isConnected) {
+      clientRef.current.publish({
+        destination: "/app/sendMessage",
+        body: JSON.stringify(message),
+      });
+    }
+    setContent(""); // Clear the message input after sending
   };
 
   const handleChatSelect = (chat) => {
     setSelectedChat(chat);
+    console.log(chat);
   };
 
   return (
     <main id="chat-main">
-      <ChatSelector onSelectChat={handleChatSelect} />
+      <ChatSelector onClick={handleChatSelect} chatData={chatData} />
       <div className="chat-window">
         <div>
           <ChatMessages messages={messages} />

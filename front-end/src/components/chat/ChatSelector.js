@@ -65,27 +65,10 @@ const UnreadCount = styled.div`
 
 const ChatSelector = ({ chatData }) => {
   const [activeChat, setActiveChat] = useState(null);
-
-  const chatData = [
-    {
-      title: "Поднятие Уровня в О...",
-      avatar: null, // Replace with actual avatar image if available
-      preview: "Graphite: Пипец",
-      unreadCount: 10,
-    },
-    {
-      title: "Нархоз | чат",
-      avatar: null, // Replace with actual avatar image if available
-      preview: null, // No preview message
-      unreadCount: 457,
-    },
-    // ... more chat items
-  ];
-
   const handleChatClick = (chatId) => {
     setActiveChat(chatId);
   };
-
+  if (!chatData) return <p>Loading</p>;
   return (
     <ChatSelectorBar>
       {chatData.map((chat, index) => (
