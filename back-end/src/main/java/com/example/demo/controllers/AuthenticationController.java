@@ -25,10 +25,10 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<?> register(
             @RequestBody RegisterRequest request) {
-        // User user = uService.findByEmail(request.getEmail());
-        // if (user != null) {
-        // return ResponseEntity.badRequest().body("User already exists");
-        // }
+        User user = uService.findByEmail(request.getEmail());
+        if (user != null) {
+            return ResponseEntity.badRequest().body("User already exists");
+        }
         log.debug("Debugging message");
         log.info("Informational message");
         log.warn("Warning message");

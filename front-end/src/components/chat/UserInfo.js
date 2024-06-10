@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   FaInfo,
@@ -9,6 +9,7 @@ import {
   FaLink,
   FaMicrophone,
 } from "react-icons/fa";
+import axios from "axios";
 
 const UserInfoContainer = styled.div`
   display: flex;
@@ -17,7 +18,7 @@ const UserInfoContainer = styled.div`
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 300px; /* Adjust width as needed */
+  width: 300px;
 `;
 
 const Header = styled.div`
@@ -36,14 +37,14 @@ const Avatar = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px; /* Adjust font size as needed */
+  font-size: 24px;
 `;
 
 const NameSection = styled.div`
   margin-left: 15px;
 
   h3 {
-    margin: 0 0 5px; /* Adjust margin as needed */
+    margin: 0 0 5px;
   }
 
   p {
@@ -63,7 +64,7 @@ const InfoItem = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  font-size: 16px; /* Adjust font size as needed */
+  font-size: 16px;
 
   svg {
     margin-right: 8px;
@@ -117,7 +118,7 @@ const ToggleSwitch = styled.label`
 `;
 
 const BlockButton = styled.button`
-  background-color: #dc3545; /* Red color */
+  background-color: #dc3545;
   color: white;
   padding: 10px 15px;
   border: none;
@@ -128,7 +129,7 @@ const BlockButton = styled.button`
 
 const AddContactButton = styled.button`
   width: 100%;
-  background-color: #28a745; /* Green color */
+  background-color: #28a745;
   color: white;
   padding: 10px 15px;
   border: none;
@@ -142,27 +143,44 @@ const AddContactButton = styled.button`
   }
 `;
 
-const UserInfo = () => {
+const UserInfo = ({ email }) => {
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`/api/user/getUser?email=${email}`);
+        setUser(response.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, [email]);
+
   return (
     <UserInfoContainer>
       <Header>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <Avatar>H</Avatar>
+          <Avatar>{user.name ? user.name[0].toUpperCase() : "H"}</Avatar>
           <NameSection>
-            <h3>Hasan</h3>
-            <p>был(a) 19 минут назад</p>
+            <h3>{user.name || "Hasan"}</h3>
+            <p>
+              {user.lastActive
+                ? `был(a) ${user.lastActive} назад`
+                : "был(a) недавно"}
+            </p>
           </NameSection>
         </div>
         <CloseButton>&times;</CloseButton>
       </Header>
       <InfoItem>
         <FaInfo style={{ fill: "var(--accent)" }} />
-        @hasan_nurlanov
+        {user.username || "@hasan_nurlanov"}
       </InfoItem>
       <InfoItem>
-        <AddContactButton className="mt-3 mb-3 btn btn-primary">
-          ADD TO CONTACTS
-        </AddContactButton>
+        <AddContactButton>ADD TO CONTACTS</AddContactButton>
       </InfoItem>
       <InfoItem>
         <FaBell style={{ fill: "var(--accent)" }} />
@@ -174,29 +192,29 @@ const UserInfo = () => {
       </InfoItem>
       <InfoItem>
         <FaFileAlt style={{ fill: "var(--accent)" }} />
-        432 поста
+        {user.posts || 432} поста
       </InfoItem>
       <InfoItem>
         <FaCamera style={{ fill: "var(--accent)" }} />
-        89 фото
+        {user.photos || 89} фото
       </InfoItem>
       <InfoItem>
         <FaVideo style={{ fill: "var(--accent)" }} />
-        54 видео
+        {user.videos || 54} видео
       </InfoItem>
       <InfoItem>
         <FaFileAlt style={{ fill: "var(--accent)" }} />
-        12 файлов
+        {user.files || 12} файлов
       </InfoItem>
       <InfoItem>
         <FaLink style={{ fill: "var(--accent)" }} />
-        35 общих ссылок
+        {user.links || 35} общих ссылок
       </InfoItem>
       <InfoItem>
         <FaMicrophone style={{ fill: "var(--accent)" }} />
-        12 голосовых сообщений
+        {user.voicemessages || 12} голосовых сообщений
       </InfoItem>
-      <BlockButton className="btn btn-secondary">Block User</BlockButton>
+      <BlockButton>Block User</BlockButton>
     </UserInfoContainer>
   );
 };

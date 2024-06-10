@@ -16,12 +16,8 @@ public class UserService {
         return userRepository.findByEmail(email).orElse(null);
     }
 
-    public UserDTO registerUser(UserDTO userDTO) {
-        User user = new User();
-        user.setName(userDTO.getUsername());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword("default_password"); // Replace with real password handling
-        userRepository.save(user);
-        return userDTO;
+    public UserDTO mapToDto(User user) {
+        UserDTO udDto = UserDTO.builder().email(user.getEmail()).username(user.getName()).build();
+        return udDto;
     }
 }

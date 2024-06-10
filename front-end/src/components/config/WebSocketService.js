@@ -1,60 +1,34 @@
-import SockJS from "sockjs-client";
-import { Client } from "@stomp/stompjs";
+const WebSocketService = {
+  connect(callback) {
+    this.socket = new WebSocket("ws://localhost:3001/api/chat");
 
-class WebSocketService {
-  constructor() {
-    this.stompClient = null;
-    this.connected = false;
-  }
-
-  connect(onMessageReceived) {
-    const socket = new SockJS("http://localhost:3001/ws");
-    this.stompClient = new Client({
-      webSocketFactory: () => socket,
-      reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
-    });
-
-    this.stompClient.onConnect = (frame) => {
-      this.connected = true;
-      console.log("Connected: " + frame);
-      this.stompClient.subscribe("/topic/messages", (message) => {
-        try {
-          onMessageReceived(JSON.parse(message.body));
-        } catch (error) {
-          console.error("Error parsing message body:", error);
-        }
-      });
+    this.socket.onopen = () => {
+      console.log("WebSocket connected");
     };
 
-    this.stompClient.onStompError = (frame) => {
-      console.error("Broker reported error: " + frame.headers["message"]);
-      console.error("Additional details: " + frame.body);
+    this.socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      callback(message);
     };
 
-    this.stompClient.onWebSocketError = (event) => {
-      console.error("WebSocket error: ", event);
+    this.socket.onclose = () => {
+      console.log("WebSocket disconnected");
     };
-
-    this.stompClient.activate();
-  }
-
-  sendMessage(message) {
-    if (this.connected) {
-      this.stompClient.publish({
-        destination: "/app/sendMessage",
-        body: JSON.stringify(message),
-      });
-    }
-  }
+  },
 
   disconnect() {
-    if (this.stompClient !== null) {
-      this.stompClient.deactivate();
+    if (this.socket) {
+      this.socket.close();
     }
-    this.connected = false;
-  }
-}
+  },
 
-export default new WebSocketService();
+  sendMessage(message) {
+    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+      this.socket.send(JSON.stringify(message));
+    } else {
+      console.error("WebSocket is not connected");
+    }
+  },
+};
+
+export default WebSocketService;

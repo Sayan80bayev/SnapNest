@@ -4,7 +4,7 @@ import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import LandingPage from "./components/LandingPage";
 import Template from "./components/Template";
-import Chat from "./components/chat/Chat";
+import ChatApp from "./components/chat/ChatApp";
 export default function App() {
   const routes = createBrowserRouter([
     {
@@ -27,7 +27,7 @@ export default function App() {
     },
     {
       path: "/chat",
-      element: <Chat />,
+      element: <ChatApp />,
     },
   ]);
   return <RouterProvider router={routes} />;
