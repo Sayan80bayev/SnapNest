@@ -24,9 +24,8 @@ public class SecurityConfiguration {
                                 .loginPage("http://localhost:3000/login")
                                 .permitAll())
                                 .csrf(AbstractHttpConfigurer::disable)
-                                // .cors(cors -> cors)
-                                .authorizeHttpRequests(authz -> authz
 
+                                .authorizeHttpRequests(authz -> authz
                                                 .anyRequest().permitAll())
                                 .sessionManagement(
                                                 (sessionManagement) -> sessionManagement
