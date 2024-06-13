@@ -8,16 +8,13 @@ import org.springframework.stereotype.Controller;
 import com.example.demo.dtos.MessageDTO;
 import com.example.demo.services.MessageService;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
+@RequiredArgsConstructor
 public class ChatController {
     private final SimpMessagingTemplate messagingTemplate;
-    @Autowired
-    private MessageService service;
-
-    public ChatController(SimpMessagingTemplate messagingTemplate) {
-        this.messagingTemplate = messagingTemplate;
-
-    }
+    private final MessageService service;
 
     @MessageMapping("/message")
     public void processMessage(MessageDTO message) {
@@ -25,4 +22,5 @@ public class ChatController {
         service.sendMessage(message);
         messagingTemplate.convertAndSend(destination, message);
     }
+
 }

@@ -3,6 +3,9 @@ package com.example.demo.controllers;
 import com.example.demo.dtos.MessageDTO;
 import com.example.demo.services.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +17,8 @@ public class MessageController {
 
     @Autowired
     private MessageService messageService;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     @PostMapping("/send")
     public MessageDTO sendMessage(@RequestBody MessageDTO messageDTO) {
@@ -25,5 +30,16 @@ public class MessageController {
         return messageService.getChat(email).stream()
                 .map(messageService::mapToDTO)
                 .collect(Collectors.toList());
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteMessage(@PathVariable Long id) {
+        try {
+            messageService.deleteMessage(id);
+            messagingTemplate.convertAndSend("/topic/messageDeleted", id);
+            return new ResponseEntity<>("Message deleted successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

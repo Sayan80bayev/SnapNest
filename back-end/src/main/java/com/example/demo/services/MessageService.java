@@ -42,6 +42,7 @@ public class MessageService {
 
     public MessageDTO mapToDTO(Message message) {
         return new MessageDTO(
+                message.getId(),
                 message.getSender().getUsername(),
                 message.getRecipient().getUsername(),
                 message.getContent(),
@@ -74,5 +75,9 @@ public class MessageService {
             throw new IllegalArgumentException("Recipient not found");
         }
         return messageRepository.findByRecipient(recipient);
+    }
+
+    public void deleteMessage(Long id) {
+        messageRepository.deleteById(id);
     }
 }
