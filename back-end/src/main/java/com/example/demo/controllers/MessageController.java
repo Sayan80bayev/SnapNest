@@ -22,7 +22,7 @@ public class MessageController {
 
     @GetMapping("/received/{email}")
     public List<MessageDTO> getReceivedMessages(@PathVariable String email) {
-        return messageService.getReceivedMessages(email).stream()
+        return messageService.getChat(email).stream()
                 .map(messageService::mapToDTO)
                 .collect(Collectors.toList());
     }

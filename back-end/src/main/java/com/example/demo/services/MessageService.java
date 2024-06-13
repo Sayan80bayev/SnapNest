@@ -42,8 +42,8 @@ public class MessageService {
 
     public MessageDTO mapToDTO(Message message) {
         return new MessageDTO(
-                message.getSender().getName(),
-                message.getRecipient().getName(),
+                message.getSender().getUsername(),
+                message.getRecipient().getUsername(),
                 message.getContent(),
                 message.getTimestamp());
     }
@@ -62,6 +62,10 @@ public class MessageService {
                 recipient,
                 messageDTO.getContent(),
                 messageDTO.getTimestamp());
+    }
+
+    public List<Message> getChat(String email) {
+        return messageRepository.findBySenderOrRecipientEmail(email);
     }
 
     public List<Message> getReceivedMessages(String email) {

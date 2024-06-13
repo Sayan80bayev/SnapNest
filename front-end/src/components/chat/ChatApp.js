@@ -11,7 +11,7 @@ import { jwtDecode } from "jwt-decode";
 export default function ChatApp() {
   const [messages, setMessages] = useState([]);
   const [sender, setSender] = useState("");
-  const [recipient, setRecipient] = useState(""); // Replace with dynamic recipient if needed
+  const [recipient, setRecipient] = useState("");
   const [inputMessage, setInputMessage] = useState("");
   const [chatData, setChatData] = useState([]);
   const clientRef = useRef(null);
@@ -31,7 +31,17 @@ export default function ChatApp() {
         console.log(error);
       }
     }
-
+    async function fetchMessages() {
+      try {
+        const result = await axios.get(
+          `http://localhost:3001/api/messages/received/${jwtDecode(token).sub}`
+        );
+        setMessages(result.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchMessages();
     fetchChats();
     setSender(jwtDecode(token).sub);
 
