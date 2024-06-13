@@ -95,15 +95,12 @@ export default function ChatApp() {
     }
   };
 
-  console.log(recipient);
-  console.log(sender);
-  console.log(messages);
   return (
     <main id="chat-main">
       <ChatSelector setRecipient={setRecipient} chatData={chatData} />
       <div className="chat-window">
-        <div>
-          <ChatMessages messages={messages} />
+        <div style={{ overflow: "auto" }}>
+          <ChatMessages messages={messages} recipient={recipient} />
         </div>
         <div>
           <form className="row form-message" onSubmit={sendMessage}>

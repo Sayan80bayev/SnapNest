@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { jwtDecode } from "jwt-decode"; // Fixed import
+import { jwtDecode } from "jwt-decode"; // Corrected import
 
 const ChatContainer = styled.div`
   display: flex;
@@ -32,19 +32,25 @@ const Message = styled.div`
   }
 `;
 
-const ChatMessages = ({ messages }) => {
-  if (!messages) return <>Loading</>;
+const ChatMessages = ({ messages, recipient }) => {
+  if (!messages) return <>Loading...</>;
   const token = localStorage.getItem("authToken");
   const decodedToken = jwtDecode(token);
 
   return (
     <ChatContainer>
       {messages &&
-        messages.map((message, index) => (
-          <Message key={index} isSender={message.sender === decodedToken.sub}>
-            <div className="message-bubble">{message.content}</div>
-          </Message>
-        ))}
+        messages.map((message, index) => {
+          const isSender = message.sender === decodedToken.sub;
+          const isRelevantMessage =
+            message.recipient === recipient || message.sender === recipient;
+          if (!isRelevantMessage) return null;
+          return (
+            <Message key={index} isSender={isSender}>
+              <div className="message-bubble">{message.content}</div>
+            </Message>
+          );
+        })}
     </ChatContainer>
   );
 };
