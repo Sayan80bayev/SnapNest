@@ -11,10 +11,9 @@ import { jwtDecode } from "jwt-decode";
 export default function ChatApp() {
   const [messages, setMessages] = useState([]);
   const [sender, setSender] = useState("");
-  const [recipient, setRecipient] = useState("sayan123serv@gmail.com"); // Replace with dynamic recipient if needed
+  const [recipient, setRecipient] = useState(""); // Replace with dynamic recipient if needed
   const [inputMessage, setInputMessage] = useState("");
   const [chatData, setChatData] = useState([]);
-  const [selectedChat, setSelectedChat] = useState(null);
   const clientRef = useRef(null);
 
   const token = localStorage.getItem("authToken");
@@ -79,21 +78,19 @@ export default function ChatApp() {
         destination: "/app/message",
         body: JSON.stringify(message),
       });
+      setMessages((prevMessages) => [...prevMessages, message]);
       setInputMessage("");
     } else {
       console.error("Client is not connected");
     }
   };
 
-  const handleChatSelect = (chat) => {
-    setSelectedChat(chat);
-    setRecipient(chat);
-    console.log(chat);
-  };
-
+  console.log(recipient);
+  console.log(sender);
+  console.log(messages);
   return (
     <main id="chat-main">
-      <ChatSelector onClick={handleChatSelect} chatData={chatData} />
+      <ChatSelector setRecipient={setRecipient} chatData={chatData} />
       <div className="chat-window">
         <div>
           <ChatMessages messages={messages} />
@@ -134,7 +131,7 @@ export default function ChatApp() {
           </form>
         </div>
       </div>
-      {selectedChat && <UserInfo email={selectedChat} />}
+      {recipient && <UserInfo email={recipient} />}
     </main>
   );
 }

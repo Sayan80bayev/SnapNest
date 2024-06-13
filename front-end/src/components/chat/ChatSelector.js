@@ -63,10 +63,11 @@ const UnreadCount = styled.div`
   margin-left: 5px;
 `;
 
-const ChatSelector = ({ chatData }) => {
+const ChatSelector = ({ chatData, setRecipient }) => {
   const [activeChat, setActiveChat] = useState(null);
-  const handleChatClick = (chatId) => {
-    setActiveChat(chatId);
+  const handleChatClick = (recipient) => {
+    setActiveChat(recipient);
+    setRecipient(recipient);
   };
   if (!chatData) return <p>Loading</p>;
   return (
@@ -75,7 +76,7 @@ const ChatSelector = ({ chatData }) => {
         <ChatItem
           key={index}
           active={activeChat === index}
-          onClick={() => handleChatClick(index)}
+          onClick={() => handleChatClick(chat.title)}
         >
           <Avatar
             bgColor={getRandomColor()}
