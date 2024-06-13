@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const getRandomColor = () => {
@@ -46,30 +46,52 @@ const Avatar = styled.div`
 `;
 
 const ChatTitle = styled.div`
+  width: 60%;
   flex-grow: 1;
+  text-overflow: ellipsis;
 `;
 
 const ChatPreview = styled.div`
+  text-overflow: ellipsis;
   font-size: 14px;
   color: #666;
 `;
 
 const UnreadCount = styled.div`
+  display: flex;
+  justify-content: center;
+  text-align: center;
   background-color: var(--primary); /* Example unread indicator color */
   color: white;
-  font-size: 12px;
-  padding: 2px 6px;
-  border-radius: 10px;
+  padding-top: 1px;
+  font-size: 13px;
+  min-width: 20px;
+  min-height: 20px;
+  border-radius: 50%;
   margin-left: 5px;
 `;
 
 const ChatSelector = ({ chatData, setRecipient }) => {
   const [activeChat, setActiveChat] = useState(null);
+  const [chatColors, setChatColors] = useState({});
+
+  useEffect(() => {
+    if (chatData) {
+      const colors = {};
+      chatData.forEach((chat, index) => {
+        colors[chat.username] = getRandomColor();
+      });
+      setChatColors(colors);
+    }
+  }, [chatData]);
+
   const handleChatClick = (recipient) => {
     setActiveChat(recipient);
     setRecipient(recipient);
   };
+
   if (!chatData) return <p>Loading</p>;
+
   return (
     <ChatSelectorBar>
       {chatData.map((chat, index) => (
@@ -79,17 +101,17 @@ const ChatSelector = ({ chatData, setRecipient }) => {
           onClick={() => handleChatClick(chat.title)}
         >
           <Avatar
-            bgColor={getRandomColor()}
+            bgColor={chatColors[chat.username]}
             style={{ width: "40px", height: "40px" }}
           >
             {chat.avatar ? (
               <img src={chat.avatar} alt={chat.title} />
             ) : (
-              chat.title[0].toUpperCase()
+              chat.username[0].toUpperCase()
             )}
           </Avatar>
           <ChatTitle>
-            {chat.title}
+            {chat.username}
             {chat.preview && <ChatPreview>{chat.preview}</ChatPreview>}
           </ChatTitle>
           {chat.unreadCount > 0 && (

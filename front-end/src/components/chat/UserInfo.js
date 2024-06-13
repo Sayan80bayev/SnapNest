@@ -118,8 +118,8 @@ const ToggleSwitch = styled.label`
 `;
 
 const BlockButton = styled.button`
-  background-color: #dc3545;
-  color: white;
+  background-color: var(--background);
+  color: var(--accent);
   padding: 10px 15px;
   border: none;
   border-radius: 15px;
@@ -129,7 +129,7 @@ const BlockButton = styled.button`
 
 const AddContactButton = styled.button`
   width: 100%;
-  background-color: #28a745;
+  background-color: var(--accent);
   color: white;
   padding: 10px 15px;
   border: none;
@@ -139,7 +139,7 @@ const AddContactButton = styled.button`
   transition: background-color 0.3s;
 
   &:hover {
-    background-color: #218838;
+    background-color: var(--primary);
   }
 `;
 
