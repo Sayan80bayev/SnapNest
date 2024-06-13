@@ -1,13 +1,13 @@
 import React from "react";
 import styled from "styled-components";
-import { jwtDecode } from "jwt-decode"; // Corrected import
+import { jwtDecode } from "jwt-decode"; 
 
 const ChatContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   padding: 15px;
-  overflow-y: auto; /* Make the chat scrollable */
+  overflow-y: auto;  
 `;
 
 const Message = styled.div`
@@ -15,7 +15,7 @@ const Message = styled.div`
   align-items: flex-start;
   margin-bottom: 10px;
   justify-content: ${(props) =>
-    props.isSender ? "flex-end" : "flex-start"}; /* Conditional alignment */
+    props.isSender ? "flex-end" : "flex-start"}; 
 
   .message-bubble {
     background-color: ${(props) =>

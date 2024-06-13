@@ -149,7 +149,9 @@ const UserInfo = ({ email }) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`/api/user/getUser?email=${email}`);
+        const response = await axios.get(
+          `http://localhost:3001/api/user/getUser?email=${email}`
+        );
         setUser(response.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -163,9 +165,11 @@ const UserInfo = ({ email }) => {
     <UserInfoContainer>
       <Header>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <Avatar>{user.name ? user.name[0].toUpperCase() : "H"}</Avatar>
+          <Avatar>
+            {user.username ? user.username[0].toUpperCase() : "H"}
+          </Avatar>
           <NameSection>
-            <h3>{user.name || "Hasan"}</h3>
+            <h3>{user.username || "Hasan"}</h3>
             <p>
               {user.lastActive
                 ? `был(a) ${user.lastActive} назад`
@@ -177,7 +181,7 @@ const UserInfo = ({ email }) => {
       </Header>
       <InfoItem>
         <FaInfo style={{ fill: "var(--accent)" }} />
-        {user.username || "@hasan_nurlanov"}
+        {user.email || "@hasan_nurlanov"}
       </InfoItem>
       <InfoItem>
         <AddContactButton>ADD TO CONTACTS</AddContactButton>
