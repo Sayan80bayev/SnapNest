@@ -26,8 +26,11 @@ public class Message {
     @ManyToOne
     @JoinColumn(name = "recipient_id")
     private User recipient;
-
     private String content;
     private String timestamp;
+    private boolean seen;
 
+    public boolean getSeen() {
+        return this.seen;
+    }
 }

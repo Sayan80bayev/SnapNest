@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 export default function () {
   return (
     <nav className="navbar navbar-expand-lg navbar-light header">
@@ -30,9 +31,9 @@ export default function () {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
+              <Link className="nav-link" to="/login">
                 Login
-              </a>
+              </Link>
             </li>
           </ul>
           <form className="d-flex">

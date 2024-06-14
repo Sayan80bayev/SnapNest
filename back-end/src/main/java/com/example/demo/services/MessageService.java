@@ -46,7 +46,8 @@ public class MessageService {
                 message.getSender().getUsername(),
                 message.getRecipient().getUsername(),
                 message.getContent(),
-                message.getTimestamp());
+                message.getTimestamp(),
+                message.getSeen());
     }
 
     public Message mapToEntity(MessageDTO messageDTO) {
@@ -58,11 +59,12 @@ public class MessageService {
         }
 
         return new Message(
-                null,
+                messageDTO.getId(),
                 sender,
                 recipient,
                 messageDTO.getContent(),
-                messageDTO.getTimestamp());
+                messageDTO.getTimestamp(),
+                messageDTO.getSeen());
     }
 
     public List<Message> getChat(String email) {

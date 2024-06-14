@@ -13,5 +13,9 @@ public class MessageDTO {
     private String recipient;
     private String content;
     private String timestamp;
+    private boolean seen;
 
+    public boolean getSeen() {
+        return this.seen;
+    }
 }
