@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import com.example.demo.controllers.ChatController;
 import com.example.demo.dtos.MessageDTO;
 import com.example.demo.entities.Message;
 import com.example.demo.entities.User;
@@ -38,6 +39,12 @@ public class MessageService {
         messageRepository.save(message);
 
         return mapToDTO(message);
+    }
+
+    public void markMessageAsSeen(Long messageId) {
+        Message m = messageRepository.findById(messageId).orElse(null);
+        m.setSeen(true);
+        messageRepository.save(m);
     }
 
     public MessageDTO mapToDTO(Message message) {

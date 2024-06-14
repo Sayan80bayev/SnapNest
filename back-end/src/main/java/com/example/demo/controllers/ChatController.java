@@ -1,6 +1,5 @@
 package com.example.demo.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
@@ -23,4 +22,10 @@ public class ChatController {
         messagingTemplate.convertAndSend(destination, message);
     }
 
+    @MessageMapping("/seen")
+    public void processSeenReceipt(MessageDTO message) {
+        service.markMessageAsSeen(message.getId());
+        String senderDestination = "/queue/" + message.getSender();
+        messagingTemplate.convertAndSend(senderDestination, message);
+    }
 }
