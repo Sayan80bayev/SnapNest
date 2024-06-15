@@ -58,17 +58,25 @@ export default function ChatApp() {
       webSocketFactory: () => socket,
       onConnect: () => {
         client.subscribe(`/queue/${jwtDecode(token).sub}`, (message) => {
-          const body = JSON.parse(message);
-          console.log(message);
-          const id = body.id;
-          const deleted = body.deleted;
-          if (deleted) {
-            setMessages(messages.filter((m) => m.id !== id));
+          const body = JSON.parse(message.body);
+          const { id, deleted } = body;
+
+          // Check if message is marked as deleted
+          if (deleted === true) {
+            setMessages((prevMessages) =>
+              prevMessages.filter((m) => m.id !== id)
+            );
           } else {
-            setMessages((prevMessages) => [
-              ...prevMessages,
-              JSON.parse(message.body),
-            ]);
+            // Check if message with the same id already exists in state
+            const messageExists = messages.some((m) => m.id === id);
+
+            if (!messageExists) {
+              // Add the message to state if it's not already there
+              setMessages((prevMessages) => [
+                ...prevMessages,
+                body, // Add the parsed body directly
+              ]);
+            }
           }
         });
       },

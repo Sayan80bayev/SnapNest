@@ -38,7 +38,9 @@ public class ChatController {
         message.setDeleted(true);
 
         String senderDestination = "/queue/" + message.getRecipient();
+        String senderDestination2 = "/queue/" + message.getSender();
         messagingTemplate.convertAndSend(senderDestination, message);
+        messagingTemplate.convertAndSend(senderDestination2, message);
     }
 
 }

@@ -92,7 +92,7 @@ const ChatMessages = ({ messages, recipient, onDeleteMessage }) => {
 
   const handleDeleteMessage = () => {
     if (contextMenu.messageIndex !== null) {
-      // console.log(messages[contextMenu.messageIndex]);
+      console.log(messages[contextMenu.messageIndex]);
       onDeleteMessage(messages[contextMenu.messageIndex]);
       setContextMenu({ ...contextMenu, visible: false });
     }
