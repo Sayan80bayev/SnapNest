@@ -14,6 +14,7 @@ public class MessageDTO {
     private String content;
     private String timestamp;
     private boolean seen;
+    private boolean deleted;
 
     public boolean getSeen() {
         return this.seen;

@@ -58,10 +58,18 @@ export default function ChatApp() {
       webSocketFactory: () => socket,
       onConnect: () => {
         client.subscribe(`/queue/${jwtDecode(token).sub}`, (message) => {
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            JSON.parse(message.body),
-          ]);
+          const body = JSON.parse(message);
+          console.log(message);
+          const id = body.id;
+          const deleted = body.deleted;
+          if (deleted) {
+            setMessages(messages.filter((m) => m.id !== id));
+          } else {
+            setMessages((prevMessages) => [
+              ...prevMessages,
+              JSON.parse(message.body),
+            ]);
+          }
         });
       },
     });
@@ -88,19 +96,35 @@ export default function ChatApp() {
         destination: "/app/message",
         body: JSON.stringify(message),
       });
-      setMessages((prevMessages) => [...prevMessages, message]);
+      // setMessages((prevMessages) => [...prevMessages, message]);
       setInputMessage("");
     } else {
       console.error("Client is not connected");
     }
   };
+  const handleDeleteMessage = (message) => {
+    if (clientRef.current && clientRef.current.connected) {
+      clientRef.current.publish({
+        destination: "/app/delete",
+        body: JSON.stringify(message),
+      });
 
+      setInputMessage("");
+    } else {
+      console.error("Client is not connected");
+    }
+  };
+  // console.log(messages);
   return (
     <main id="chat-main">
       <ChatSelector setRecipient={setRecipient} chatData={chatData} />
       <div className="chat-window">
         <div style={{ overflow: "auto" }}>
-          <ChatMessages messages={messages} recipient={recipient} />
+          <ChatMessages
+            messages={messages}
+            recipient={recipient}
+            onDeleteMessage={handleDeleteMessage}
+          />
         </div>
         <div>
           <form className="row form-message" onSubmit={sendMessage}>

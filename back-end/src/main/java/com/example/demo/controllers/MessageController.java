@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dtos.MessageDTO;
+import com.example.demo.entities.Message;
 import com.example.demo.services.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,8 +36,9 @@ public class MessageController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteMessage(@PathVariable Long id) {
         try {
+            Message m = messageService.findById(id);
             messageService.deleteMessage(id);
-            messagingTemplate.convertAndSend("/topic/messageDeleted", id);
+            messagingTemplate.convertAndSend("/queue/" + m.getSender(), id);
             return new ResponseEntity<>("Message deleted successfully", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

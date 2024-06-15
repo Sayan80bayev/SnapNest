@@ -18,8 +18,10 @@ public class ChatController {
     @MessageMapping("/message")
     public void processMessage(MessageDTO message) {
         String destination = "/queue/" + message.getRecipient();
-        service.sendMessage(message);
-        messagingTemplate.convertAndSend(destination, message);
+        String destination2 = "/queue/" + message.getSender();
+        MessageDTO respone = service.sendMessage(message);
+        messagingTemplate.convertAndSend(destination, respone);
+        messagingTemplate.convertAndSend(destination2, respone);
     }
 
     @MessageMapping("/seen")
@@ -28,4 +30,15 @@ public class ChatController {
         String senderDestination = "/queue/" + message.getSender();
         messagingTemplate.convertAndSend(senderDestination, message);
     }
+
+    @MessageMapping("/delete")
+    public void processDeleteMessage(MessageDTO message) {
+        service.deleteMessage(message.getId());
+
+        message.setDeleted(true);
+
+        String senderDestination = "/queue/" + message.getRecipient();
+        messagingTemplate.convertAndSend(senderDestination, message);
+    }
+
 }

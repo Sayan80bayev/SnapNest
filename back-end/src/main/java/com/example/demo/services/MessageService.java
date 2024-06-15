@@ -22,6 +22,10 @@ public class MessageService {
     @Autowired
     private UserRepository userRepository;
 
+    public Message findById(Long id) {
+        return messageRepository.findById(id).orElse(null);
+    }
+
     public MessageDTO sendMessage(MessageDTO messageDTO) {
         User sender = userRepository.findByEmail(messageDTO.getSender()).orElse(null);
         User recipient = userRepository.findByEmail(messageDTO.getRecipient()).orElse(null);
@@ -54,7 +58,8 @@ public class MessageService {
                 message.getRecipient().getUsername(),
                 message.getContent(),
                 message.getTimestamp(),
-                message.getSeen());
+                message.getSeen(),
+                false);
     }
 
     public Message mapToEntity(MessageDTO messageDTO) {
