@@ -60,22 +60,15 @@ export default function ChatApp() {
         client.subscribe(`/queue/${jwtDecode(token).sub}`, (message) => {
           const body = JSON.parse(message.body);
           const { id, deleted } = body;
-
-          // Check if message is marked as deleted
           if (deleted === true) {
             setMessages((prevMessages) =>
               prevMessages.filter((m) => m.id !== id)
             );
           } else {
-            // Check if message with the same id already exists in state
             const messageExists = messages.some((m) => m.id === id);
 
             if (!messageExists) {
-              // Add the message to state if it's not already there
-              setMessages((prevMessages) => [
-                ...prevMessages,
-                body, // Add the parsed body directly
-              ]);
+              setMessages((prevMessages) => [...prevMessages, body]);
             }
           }
         });
@@ -104,7 +97,6 @@ export default function ChatApp() {
         destination: "/app/message",
         body: JSON.stringify(message),
       });
-      // setMessages((prevMessages) => [...prevMessages, message]);
       setInputMessage("");
     } else {
       console.error("Client is not connected");
@@ -122,7 +114,6 @@ export default function ChatApp() {
       console.error("Client is not connected");
     }
   };
-  // console.log(messages);
   return (
     <main id="chat-main">
       <ChatSelector setRecipient={setRecipient} chatData={chatData} />
