@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.dtos.ChatDTO;
 import com.example.demo.dtos.UserDTO;
 import com.example.demo.entities.User;
+import com.example.demo.services.MessageService;
 import com.example.demo.services.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/user")
 public class UserController {
     private final UserService service;
+    private final MessageService messageService;
 
     @GetMapping("/getUser")
     public UserDTO getUserInfo(@RequestParam("email") String email) {
@@ -29,12 +31,25 @@ public class UserController {
 
     @GetMapping("/getChats")
     public List<ChatDTO> getChats(@RequestParam("email") String email) {
-        List<User> l = service.findChats(email);
-        List<ChatDTO> c = new ArrayList<>();
-        for (User u : l) {
-            c.add(ChatDTO.builder().username(u.getName()).title(u.getEmail()).unreadCount(1).email(u.getEmail())
-                    .preview(u.getEmail()).build());
+        List<Object[]> results = messageService.findChats(email);
+        List<ChatDTO> chatDTOs = new ArrayList<>();
+
+        for (Object[] result : results) {
+            String senderEmail = (String) result[0];
+            String senderName = (String) result[1];
+            Long count = (Long) result[2];
+
+            ChatDTO chatDTO = new ChatDTO();
+            chatDTO.setUsername(senderName);
+            chatDTO.setTitle(senderEmail);
+            chatDTO.setUnreadCount(count);
+            chatDTO.setEmail(senderEmail); // Assuming this is the recipient's email
+            chatDTO.setPreview(senderEmail);
+
+            chatDTOs.add(chatDTO);
         }
-        return c;
+
+        return chatDTOs;
     }
+
 }

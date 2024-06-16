@@ -19,10 +19,6 @@ public class UserService {
         return userRepository.findByEmail(email).orElse(null);
     }
 
-    public List<User> findChats(String email) {
-        return userRepository.findChats(email);
-    }
-
     public UserDTO mapToDto(User user) {
         UserDTO udDto = UserDTO.builder().email(user.getEmail()).username(user.getName()).build();
         return udDto;

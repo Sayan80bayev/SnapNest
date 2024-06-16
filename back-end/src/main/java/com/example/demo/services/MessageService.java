@@ -26,6 +26,10 @@ public class MessageService {
         return messageRepository.findById(id).orElse(null);
     }
 
+    public List<Object[]> findChats(String email) {
+        return messageRepository.countUnseenMessagesBySender(email);
+    }
+
     public MessageDTO sendMessage(MessageDTO messageDTO) {
         User sender = userRepository.findByEmail(messageDTO.getSender()).orElse(null);
         User recipient = userRepository.findByEmail(messageDTO.getRecipient()).orElse(null);
