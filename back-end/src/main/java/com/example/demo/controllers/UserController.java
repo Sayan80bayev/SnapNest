@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.entities.Chat;
 import com.example.demo.dtos.ChatDTO;
 import com.example.demo.dtos.UserDTO;
-import com.example.demo.entities.Message;
-import com.example.demo.services.MessageService;
+import com.example.demo.services.ChatService;
 import com.example.demo.services.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/user")
 public class UserController {
     private final UserService service;
-    private final MessageService messageService;
+    private final ChatService chatService;
 
     @GetMapping("/getUser")
     public UserDTO getUserInfo(@RequestParam("email") String email) {
@@ -30,23 +30,11 @@ public class UserController {
 
     @GetMapping("/getChats")
     public List<ChatDTO> getChats(@RequestParam("email") String email) {
-        List<Object[]> results = messageService.findChats(email);
         List<ChatDTO> chatDTOs = new ArrayList<>();
-        for (Object[] result : results) {
-            String senderEmail = (String) result[0];
-            String senderName = (String) result[1];
-            Long count = (Long) result[2];
-            Message preview = messageService.findNewestMessage(email, senderEmail);
-            ChatDTO chatDTO = new ChatDTO();
-            chatDTO.setUsername(senderName);
-            chatDTO.setTitle(senderEmail);
-            chatDTO.setUnreadCount(count);
-            chatDTO.setEmail(senderEmail);
-            chatDTO.setPreview(preview.getContent());
-            // chatDTO.setPreview(email);
-            chatDTOs.add(chatDTO);
+        List<Chat> chat = chatService.findByMember(email);
+        for (Chat c : chat) {
+            chatDTOs.add(chatService.mapToChatDTO(c));
         }
-
         return chatDTOs;
     }
 

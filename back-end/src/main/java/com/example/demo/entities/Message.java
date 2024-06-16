@@ -29,6 +29,8 @@ public class Message {
     private String content;
     private String timestamp;
     private boolean seen;
+    @ManyToOne
+    private Chat chat;
 
     public boolean getSeen() {
         return this.seen;

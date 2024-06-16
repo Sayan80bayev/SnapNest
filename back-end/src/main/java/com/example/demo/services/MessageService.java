@@ -1,9 +1,10 @@
 package com.example.demo.services;
 
-import com.example.demo.controllers.ChatController;
 import com.example.demo.dtos.MessageDTO;
 import com.example.demo.entities.Message;
 import com.example.demo.entities.User;
+import com.example.demo.entities.Chat;
+import com.example.demo.repositories.ChatRepository;
 import com.example.demo.repositories.MessageRepository;
 import com.example.demo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -21,6 +24,9 @@ public class MessageService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ChatRepository chatRepository;
 
     public Message findById(Long id) {
         return messageRepository.findById(id).orElse(null);
@@ -71,7 +77,8 @@ public class MessageService {
                 message.getContent(),
                 message.getTimestamp(),
                 message.getSeen(),
-                false);
+                false,
+                message.getChat().getId());
     }
 
     public Message mapToEntity(MessageDTO messageDTO) {
@@ -81,14 +88,19 @@ public class MessageService {
         if (sender == null || recipient == null) {
             throw new IllegalArgumentException("Sender or recipient not found");
         }
-
+        Chat c = chatRepository.findById(messageDTO.getChat_id()).orElse(null);
+        if (c == null) {
+            c = new Chat();
+            c.setChatMembers(new ArrayList<>(Arrays.asList(sender, recipient)));
+        }
         return new Message(
                 messageDTO.getId(),
                 sender,
                 recipient,
                 messageDTO.getContent(),
                 messageDTO.getTimestamp(),
-                messageDTO.getSeen());
+                messageDTO.getSeen(),
+                c);
     }
 
     public List<Message> getChat(String email) {

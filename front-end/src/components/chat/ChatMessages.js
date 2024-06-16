@@ -1,56 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { jwtDecode } from "jwt-decode";
-
-const ChatContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 15px;
-  overflow-y: auto;
-`;
-
-const Message = styled.div`
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 10px;
-  justify-content: ${(props) => (props.isSender ? "flex-end" : "flex-start")};
-
-  .message-bubble {
-    background-color: ${(props) =>
-      props.isSender
-        ? "var(--accent)"
-        : "#f0f0f0"}; /* Conditional background color */
-    color: ${(props) =>
-      props.isSender ? "white" : "black"}; /* Conditional text color */
-    margin-left: ${(props) => (props.isSender ? "10px" : "0")};
-    margin-right: ${(props) => (props.isSender ? "0" : "10px")};
-    padding: 8px 12px;
-    border-radius: 15px;
-    max-width: 70%; /* Limit bubble width for better readability */
-  }
-`;
-
-const ContextMenu = styled.ul`
-  position: absolute;
-  top: ${(props) => props.position.y}px;
-  left: ${(props) => props.position.x}px;
-  background: white;
-  border: 1px solid #ccc;
-  padding: 10px;
-  list-style: none;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-  z-index: 1000;
-
-  li {
-    padding: 5px 10px;
-    cursor: pointer;
-
-    &:hover {
-      background: #f0f0f0;
-    }
-  }
-`;
+import { ContextMenu } from "./ContextMenu";
+import { ChatContainer } from "./ChatContainer";
+import Message from "./Message";
 
 const ChatMessages = ({ messages, recipient, onDeleteMessage }) => {
   const [contextMenu, setContextMenu] = useState({
@@ -111,9 +64,8 @@ const ChatMessages = ({ messages, recipient, onDeleteMessage }) => {
               key={index}
               isSender={isSender}
               onContextMenu={(event) => handleRightClick(event, index)}
-            >
-              <div className="message-bubble">{message.content}</div>
-            </Message>
+              content={message.content}
+            />
           );
         })}
       {contextMenu.visible && (

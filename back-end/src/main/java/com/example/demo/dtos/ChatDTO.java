@@ -1,5 +1,7 @@
 package com.example.demo.dtos;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,10 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatDTO {
-    private String username;
-    private String email;
-    private Long unreadCount;
-    private String preview;
+    private Long id;
     private String title;
-
+    private List<UserDTO> memberList;
+    private List<MessageDTO> messageList;
 }

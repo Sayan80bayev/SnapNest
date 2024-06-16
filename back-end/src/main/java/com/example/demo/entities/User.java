@@ -13,6 +13,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,13 +22,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import com.example.demo.enums.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "app_user")
+@Table(name = "users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +39,9 @@ public class User implements UserDetails {
     private String name;
     private String email;
     private String password;
+    // @ManyToMany
+    // @JsonBackReference
+    // private List<Chat> chat;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

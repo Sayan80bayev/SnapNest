@@ -15,6 +15,7 @@ public class MessageDTO {
     private String timestamp;
     private boolean seen;
     private boolean deleted;
+    private Long chat_id;
 
     public boolean getSeen() {
         return this.seen;

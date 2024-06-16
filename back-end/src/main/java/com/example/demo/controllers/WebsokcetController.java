@@ -1,19 +1,17 @@
 package com.example.demo.controllers;
 
-import org.hibernate.mapping.List;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import com.example.demo.dtos.MessageDTO;
 import com.example.demo.services.MessageService;
-import com.example.demo.services.UserService;
 
 import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-public class ChatController {
+public class WebsokcetController {
     private final SimpMessagingTemplate messagingTemplate;
     private final MessageService service;
 
@@ -22,7 +20,6 @@ public class ChatController {
         String recipient = "/queue/" + message.getRecipient();
         String sender = "/queue/" + message.getSender();
         MessageDTO respone = service.sendMessage(message);
-        messagingTemplate.convertAndSend(recipient, respone);
         messagingTemplate.convertAndSend(recipient, respone);
         messagingTemplate.convertAndSend(sender, respone);
     }

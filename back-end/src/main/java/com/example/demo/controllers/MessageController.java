@@ -33,15 +33,16 @@ public class MessageController {
                 .collect(Collectors.toList());
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteMessage(@PathVariable Long id) {
-        try {
-            Message m = messageService.findById(id);
-            messageService.deleteMessage(id);
-            messagingTemplate.convertAndSend("/queue/" + m.getSender(), id);
-            return new ResponseEntity<>("Message deleted successfully", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+    // @DeleteMapping("/delete/{id}")
+    // public ResponseEntity<String> deleteMessage(@PathVariable Long id) {
+    // try {
+    // Message m = messageService.findById(id);
+    // messageService.deleteMessage(id);
+    // messagingTemplate.convertAndSend("/queue/" + m.getSender(), id);
+    // return new ResponseEntity<>("Message deleted successfully", HttpStatus.OK);
+    // } catch (Exception e) {
+    // return new ResponseEntity<>(e.getMessage(),
+    // HttpStatus.INTERNAL_SERVER_ERROR);
+    // }
+    // }
 }

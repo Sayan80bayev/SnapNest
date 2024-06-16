@@ -89,8 +89,8 @@ export default function ChatApp() {
     event.preventDefault();
     const message = {
       sender: jwtDecode(token).sub,
-      recipient: recipient,
-      // recipient: "sayan@gmail.com",
+      // recipient: recipient,
+      recipient: "almaz@gmail.com",
       content: inputMessage,
     };
     if (clientRef.current && clientRef.current.connected) {

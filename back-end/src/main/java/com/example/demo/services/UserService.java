@@ -23,4 +23,8 @@ public class UserService {
         UserDTO udDto = UserDTO.builder().email(user.getEmail()).username(user.getName()).build();
         return udDto;
     }
+
+    public User mapToEntity(UserDTO userDTO) {
+        return userRepository.findByEmail(userDTO.getEmail()).orElse(null);
+    }
 }
