@@ -90,6 +90,7 @@ export default function ChatApp() {
     const message = {
       sender: jwtDecode(token).sub,
       recipient: recipient,
+      // recipient: "sayan@gmail.com",
       content: inputMessage,
     };
     if (clientRef.current && clientRef.current.connected) {

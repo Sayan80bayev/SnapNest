@@ -26,6 +26,14 @@ public class MessageService {
         return messageRepository.findById(id).orElse(null);
     }
 
+    public List<Message> findByEmail(String email) {
+        return messageRepository.findBySenderOrRecipientEmail(email);
+    }
+
+    public Message findNewestMessage(String senderEmail, String recipientEmail) {
+        return messageRepository.findNewestMessage(senderEmail, recipientEmail);
+    }
+
     public List<Object[]> findChats(String email) {
         return messageRepository.countUnseenMessagesBySender(email);
     }

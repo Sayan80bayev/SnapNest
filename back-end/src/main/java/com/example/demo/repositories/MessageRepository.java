@@ -4,6 +4,7 @@ import com.example.demo.entities.Message;
 import com.example.demo.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,5 +18,11 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     @Query("SELECT m.sender.email, m.sender.name, COUNT(m) FROM Message m WHERE m.recipient.email = :email AND m.seen = false GROUP BY m.sender.email, m.sender.name")
     List<Object[]> countUnseenMessagesBySender(String email);
+
+    @Query("SELECT m FROM Message m " +
+            "WHERE (m.sender.email = :senderEmail AND m.recipient.email = :recipientEmail) " +
+            "OR (m.sender.email = :recipientEmail AND m.recipient.email = :senderEmail) " +
+            "ORDER BY m.timestamp DESC LIMIT 1")
+    Message findNewestMessage(@Param("senderEmail") String senderEmail, @Param("recipientEmail") String recipientEmail);
 
 }

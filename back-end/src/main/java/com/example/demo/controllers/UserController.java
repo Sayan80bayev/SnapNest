@@ -2,7 +2,6 @@ package com.example.demo.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dtos.ChatDTO;
 import com.example.demo.dtos.UserDTO;
-import com.example.demo.entities.User;
+import com.example.demo.entities.Message;
 import com.example.demo.services.MessageService;
 import com.example.demo.services.UserService;
 
@@ -33,19 +32,18 @@ public class UserController {
     public List<ChatDTO> getChats(@RequestParam("email") String email) {
         List<Object[]> results = messageService.findChats(email);
         List<ChatDTO> chatDTOs = new ArrayList<>();
-
         for (Object[] result : results) {
             String senderEmail = (String) result[0];
             String senderName = (String) result[1];
             Long count = (Long) result[2];
-
+            Message preview = messageService.findNewestMessage(email, senderEmail);
             ChatDTO chatDTO = new ChatDTO();
             chatDTO.setUsername(senderName);
             chatDTO.setTitle(senderEmail);
             chatDTO.setUnreadCount(count);
-            chatDTO.setEmail(senderEmail); // Assuming this is the recipient's email
-            chatDTO.setPreview(senderEmail);
-
+            chatDTO.setEmail(senderEmail);
+            chatDTO.setPreview(preview.getContent());
+            // chatDTO.setPreview(email);
             chatDTOs.add(chatDTO);
         }
 
