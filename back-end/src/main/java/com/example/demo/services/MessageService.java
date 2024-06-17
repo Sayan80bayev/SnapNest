@@ -6,7 +6,6 @@ import com.example.demo.entities.User;
 import com.example.demo.entities.Chat;
 import com.example.demo.repositories.ChatRepository;
 import com.example.demo.repositories.MessageRepository;
-import com.example.demo.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MessageService {
@@ -23,10 +23,10 @@ public class MessageService {
     private MessageRepository messageRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private ChatRepository chatRepository;
 
     @Autowired
-    private ChatRepository chatRepository;
+    private UserService userService;
 
     public Message findById(Long id) {
         return messageRepository.findById(id).orElse(null);
@@ -36,18 +36,18 @@ public class MessageService {
         return messageRepository.findBySenderOrRecipientEmail(email);
     }
 
-    public Message findNewestMessage(String senderEmail, String recipientEmail) {
-        return messageRepository.findNewestMessage(senderEmail, recipientEmail);
-    }
+    // public Message findNewestMessage(String senderEmail, String recipientEmail) {
+    // return messageRepository.findNewestMessage(senderEmail, recipientEmail);
+    // }
 
-    public List<Object[]> findChats(String email) {
-        return messageRepository.countUnseenMessagesBySender(email);
-    }
+    // public List<Object[]> findChats(String email) {
+    // return messageRepository.countUnseenMessagesBySender(email);
+    // }
 
     public MessageDTO sendMessage(MessageDTO messageDTO) {
         // Retrieve sender and recipient from the repository
-        User sender = userRepository.findByEmail(messageDTO.getSender()).orElse(null);
-        User recipient = userRepository.findByEmail(messageDTO.getRecipient()).orElse(null);
+        User sender = userService.findByEmail(messageDTO.getSender());
+        User recipient = userService.findByEmail(messageDTO.getRecipient());
 
         // Check if either sender or recipient is not found
         if (sender == null || recipient == null) {
@@ -92,11 +92,11 @@ public class MessageService {
         return mapToDTO(message);
     }
 
-    public void markMessageAsSeen(Long messageId) {
-        Message m = messageRepository.findById(messageId).orElse(null);
-        m.setSeen(true);
-        messageRepository.save(m);
-    }
+    // public void markMessageAsSeen(Long messageId) {
+    // Message m = messageRepository.findById(messageId).orElse(null);
+    // m.setRead(true);
+    // messageRepository.save(m);
+    // }
 
     public MessageDTO mapToDTO(Message message) {
         return new MessageDTO(
@@ -105,14 +105,14 @@ public class MessageService {
                 message.getRecipient().getUsername(),
                 message.getContent(),
                 message.getTimestamp(),
-                message.getSeen(),
+                message.getSeen().stream().map(u -> userService.mapToDto(u)).collect(Collectors.toList()),
                 false,
                 message.getChat().getId());
     }
 
     public Message mapToEntity(MessageDTO messageDTO) {
-        User sender = userRepository.findByEmail(messageDTO.getSender()).orElse(null);
-        User recipient = userRepository.findByEmail(messageDTO.getRecipient()).orElse(null);
+        User sender = userService.findByEmail(messageDTO.getSender());
+        User recipient = userService.findByEmail(messageDTO.getRecipient());
 
         if (sender == null || recipient == null) {
             throw new IllegalArgumentException("Sender or recipient not found");
@@ -128,7 +128,7 @@ public class MessageService {
                 recipient,
                 messageDTO.getContent(),
                 messageDTO.getTimestamp(),
-                messageDTO.getSeen(),
+                messageDTO.getRead().stream().map(u -> userService.mapToEntity(u)).collect(Collectors.toList()),
                 c);
     }
 
@@ -137,7 +137,7 @@ public class MessageService {
     }
 
     public List<Message> getReceivedMessages(String email) {
-        User recipient = userRepository.findByEmail(email).orElse(null);
+        User recipient = userService.findByEmail(email);
         if (recipient == null) {
             throw new IllegalArgumentException("Recipient not found");
         }

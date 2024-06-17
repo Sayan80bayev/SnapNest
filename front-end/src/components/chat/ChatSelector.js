@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { findChatTitleByParticipantEmail, countUnreadMessages } from "./helper";
+import { jwtDecode } from "jwt-decode";
 
 const getRandomColor = () => {
   const letters = "0123456789ABCDEF";
@@ -9,7 +11,6 @@ const getRandomColor = () => {
   }
   return color;
 };
-
 const ChatSelectorBar = styled.div`
   width: 20%;
   background-color: #f8f8f8;
@@ -74,7 +75,8 @@ const UnreadCount = styled.div`
 const ChatSelector = ({ chatData, setRecipient }) => {
   const [activeChat, setActiveChat] = useState(null);
   const [chatColors, setChatColors] = useState({});
-
+  const token = localStorage.getItem("authToken");
+  const email = jwtDecode(token).sub;
   useEffect(() => {
     if (chatData) {
       const colors = {};
@@ -107,15 +109,15 @@ const ChatSelector = ({ chatData, setRecipient }) => {
             {chat.avatar ? (
               <img src={chat.avatar} alt={chat.title} />
             ) : (
-              chat.username[0].toUpperCase()
+              findChatTitleByParticipantEmail(chat, email)[0].toUpperCase()
             )}
           </Avatar>
           <ChatTitle>
-            {chat.username}
+            {findChatTitleByParticipantEmail(chat, email)}
             {chat.preview && <ChatPreview>{chat.preview}</ChatPreview>}
           </ChatTitle>
-          {chat.unreadCount > 0 && (
-            <UnreadCount>{chat.unreadCount}</UnreadCount>
+          {countUnreadMessages(chat, email) > 0 && (
+            <UnreadCount>{countUnreadMessages(chat, email)}</UnreadCount>
           )}
         </ChatItem>
       ))}

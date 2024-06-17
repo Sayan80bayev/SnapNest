@@ -15,14 +15,4 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
 
     @Query("SELECT m FROM Message m WHERE m.sender.email = :email OR m.recipient.email = :email")
     List<Message> findBySenderOrRecipientEmail(String email);
-
-    @Query("SELECT m.sender.email, m.sender.name, COUNT(m) FROM Message m WHERE m.recipient.email = :email AND m.seen = false GROUP BY m.sender.email, m.sender.name")
-    List<Object[]> countUnseenMessagesBySender(String email);
-
-    @Query("SELECT m FROM Message m " +
-            "WHERE (m.sender.email = :senderEmail AND m.recipient.email = :recipientEmail) " +
-            "OR (m.sender.email = :recipientEmail AND m.recipient.email = :senderEmail) " +
-            "ORDER BY m.timestamp DESC LIMIT 1")
-    Message findNewestMessage(@Param("senderEmail") String senderEmail, @Param("recipientEmail") String recipientEmail);
-
 }

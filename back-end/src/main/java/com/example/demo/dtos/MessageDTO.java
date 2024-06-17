@@ -1,5 +1,7 @@
 package com.example.demo.dtos;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,11 +15,7 @@ public class MessageDTO {
     private String recipient;
     private String content;
     private String timestamp;
-    private boolean seen;
+    private List<UserDTO> read;
     private boolean deleted;
     private Long chat_id;
-
-    public boolean getSeen() {
-        return this.seen;
-    }
 }
