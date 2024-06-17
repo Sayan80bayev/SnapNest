@@ -8,7 +8,9 @@ import org.hibernate.annotations.ManyToAny;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.annotation.Generated;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,7 +35,14 @@ public class Chat {
     @ManyToMany
     // @JsonBackReference
     private List<User> chatMembers;
-    @OneToMany
-    @JoinColumn(name = "message_id")
+    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    // @JoinColumn(name = "message_id")
+    @JsonBackReference
     private List<Message> messages;
+
+    public void addMessage(Message message) {
+        messages.add(message);
+        message.setChat(this);
+    }
+
 }

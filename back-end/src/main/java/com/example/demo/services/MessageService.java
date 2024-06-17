@@ -45,21 +45,50 @@ public class MessageService {
     }
 
     public MessageDTO sendMessage(MessageDTO messageDTO) {
+        // Retrieve sender and recipient from the repository
         User sender = userRepository.findByEmail(messageDTO.getSender()).orElse(null);
         User recipient = userRepository.findByEmail(messageDTO.getRecipient()).orElse(null);
 
+        // Check if either sender or recipient is not found
         if (sender == null || recipient == null) {
             throw new IllegalArgumentException("Sender or recipient not found");
         }
 
+        Chat c = null;
+        // Try to retrieve the chat by ID
+        try {
+            if (messageDTO.getChat_id() != null) {
+                c = chatRepository.findById(messageDTO.getChat_id()).orElse(null);
+            }
+        } catch (Exception e) {
+            // Add logging or handle the exception if necessary
+            System.err.println("Error retrieving chat: " + e.getMessage());
+        }
+
+        // Create a new message instance
         Message message = new Message();
         message.setSender(sender);
         message.setRecipient(recipient);
         message.setContent(messageDTO.getContent());
         message.setTimestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        message.setChat(c);
 
+        // If no chat was found or provided, create a new chat
+        if (c == null) {
+            c = new Chat();
+            c.setChatMembers(new ArrayList<>(Arrays.asList(sender, recipient)));
+            c.setMessages(new ArrayList<>());
+            message.setChat(c);
+        }
+
+        // Add the message to the chat
+        c.getMessages().add(message);
+        chatRepository.save(c);
+
+        // Save the message
         messageRepository.save(message);
 
+        // Convert the message entity to DTO and return it
         return mapToDTO(message);
     }
 

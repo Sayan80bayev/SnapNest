@@ -1,5 +1,7 @@
 package com.example.demo.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,6 +32,7 @@ public class Message {
     private String timestamp;
     private boolean seen;
     @ManyToOne
+    @JsonBackReference
     private Chat chat;
 
     public boolean getSeen() {
