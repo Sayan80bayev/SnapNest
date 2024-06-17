@@ -1,7 +1,7 @@
 export const findChatTitleByParticipantEmail = (chat, yourEmail) => {
   for (let member of chat.memberList) {
     if (member.email !== yourEmail) {
-      return member.username;
+      return member;
     }
   }
   return null; // Если чат не найден
@@ -23,9 +23,12 @@ export const countUnreadMessages = (chat, yourEmail) => {
   let unreadCount = 0;
 
   for (let message of chat.messageList) {
-    if (message.recipient === yourEmail && !message.read.includes(yourEmail)) {
+    if (message.recipient === yourEmail && !message.read?.includes(yourEmail)) {
       unreadCount++;
     }
   }
   return unreadCount;
+};
+export const findChatById = (chats, chatId) => {
+  return chats.find((chat) => chat.id === chatId);
 };

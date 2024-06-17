@@ -72,7 +72,7 @@ const UnreadCount = styled.div`
   margin-left: 5px;
 `;
 
-const ChatSelector = ({ chatData, setRecipient }) => {
+const ChatSelector = ({ chatData, setCurrentChat, setRecipient }) => {
   const [activeChat, setActiveChat] = useState(null);
   const [chatColors, setChatColors] = useState({});
   const token = localStorage.getItem("authToken");
@@ -87,9 +87,10 @@ const ChatSelector = ({ chatData, setRecipient }) => {
     }
   }, [chatData]);
 
-  const handleChatClick = (recipient) => {
-    setActiveChat(recipient);
-    setRecipient(recipient);
+  const handleChatClick = (id, email) => {
+    setActiveChat(id);
+    setCurrentChat(id);
+    setRecipient(email);
   };
 
   if (!chatData) return <p>Loading</p>;
@@ -100,7 +101,12 @@ const ChatSelector = ({ chatData, setRecipient }) => {
         <ChatItem
           key={index}
           active={activeChat === index}
-          onClick={() => handleChatClick(chat.title)}
+          onClick={() =>
+            handleChatClick(
+              chat.id,
+              findChatTitleByParticipantEmail(chat, email)?.email
+            )
+          }
         >
           <Avatar
             bgColor={chatColors[chat.username]}
@@ -109,11 +115,14 @@ const ChatSelector = ({ chatData, setRecipient }) => {
             {chat.avatar ? (
               <img src={chat.avatar} alt={chat.title} />
             ) : (
-              findChatTitleByParticipantEmail(chat, email)[0].toUpperCase()
+              findChatTitleByParticipantEmail(
+                chat,
+                email
+              ).username[0].toUpperCase()
             )}
           </Avatar>
           <ChatTitle>
-            {findChatTitleByParticipantEmail(chat, email)}
+            {findChatTitleByParticipantEmail(chat, email).username}
             {chat.preview && <ChatPreview>{chat.preview}</ChatPreview>}
           </ChatTitle>
           {countUnreadMessages(chat, email) > 0 && (

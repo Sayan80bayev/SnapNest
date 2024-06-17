@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 import com.example.demo.dtos.MessageDTO;
+import com.example.demo.dtos.UserDTO;
 import com.example.demo.entities.Message;
 import com.example.demo.entities.User;
 import com.example.demo.entities.Chat;
@@ -86,7 +87,7 @@ public class MessageService {
         chatRepository.save(c);
 
         // Save the message
-        messageRepository.save(message);
+        // messageRepository.save(message);
 
         // Convert the message entity to DTO and return it
         return mapToDTO(message);
@@ -99,13 +100,19 @@ public class MessageService {
     // }
 
     public MessageDTO mapToDTO(Message message) {
+        List<UserDTO> read = null;
+        try {
+            read = message.getRead().stream().map(u -> userService.mapToDto(u)).collect(Collectors.toList());
+
+        } catch (Exception e) {
+        }
         return new MessageDTO(
                 message.getId(),
                 message.getSender().getUsername(),
                 message.getRecipient().getUsername(),
                 message.getContent(),
                 message.getTimestamp(),
-                message.getSeen().stream().map(u -> userService.mapToDto(u)).collect(Collectors.toList()),
+                read,
                 false,
                 message.getChat().getId());
     }
@@ -122,13 +129,16 @@ public class MessageService {
             c = new Chat();
             c.setChatMembers(new ArrayList<>(Arrays.asList(sender, recipient)));
         }
+        List<User> read = messageDTO.getRead().stream().map(u -> userService.mapToEntity(u))
+                .collect(Collectors.toList());
+
         return new Message(
                 messageDTO.getId(),
                 sender,
                 recipient,
                 messageDTO.getContent(),
                 messageDTO.getTimestamp(),
-                messageDTO.getRead().stream().map(u -> userService.mapToEntity(u)).collect(Collectors.toList()),
+                read,
                 c);
     }
 

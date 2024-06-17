@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { jwtDecode } from "jwt-decode";
-import { ContextMenu } from "./ContextMenu";
-import { ChatContainer } from "./ChatContainer";
-import Message from "./Message";
+import { jwtDecode } from "jwt-decode"; // Импортируем правильно
+import { ContextMenu } from "./ContextMenu"; // Если это ваш кастомный компонент
+import { ChatContainer } from "./ChatContainer"; // Если это ваш кастомный компонент
+import Message from "./Message"; // Если это ваш кастомный компонент
 
 const ChatMessages = ({ messages, recipient, onDeleteMessage }) => {
   const [contextMenu, setContextMenu] = useState({
@@ -31,8 +31,15 @@ const ChatMessages = ({ messages, recipient, onDeleteMessage }) => {
   }, [contextMenu]);
 
   if (!messages) return <>Loading...</>;
+
   const token = localStorage.getItem("authToken");
-  const decodedToken = jwtDecode(token);
+  let decodedToken;
+  try {
+    decodedToken = jwtDecode(token);
+  } catch (e) {
+    console.error("Error decoding token:", e);
+    return <>Invalid token</>;
+  }
 
   const handleRightClick = (event, index) => {
     event.preventDefault();
@@ -50,15 +57,17 @@ const ChatMessages = ({ messages, recipient, onDeleteMessage }) => {
       setContextMenu({ ...contextMenu, visible: false });
     }
   };
+  console.log(messages);
   return (
     <ChatContainer>
       {messages &&
         messages.map((message, index) => {
           const isSender = message.sender === decodedToken.sub;
-          const isRelevantMessage =
-            message.recipient === recipient || message.sender === recipient;
-          if (!isRelevantMessage) return null;
-          if (message.deleted) return null;
+          if (message.deleted) {
+            console.log("Skipping deleted message:", message);
+            return null;
+          }
+
           return (
             <Message
               key={index}

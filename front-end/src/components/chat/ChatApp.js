@@ -7,11 +7,13 @@ import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { addMessage, findChatById } from "./helper";
 
 export default function ChatApp() {
   const [messages, setMessages] = useState([]);
   const [sender, setSender] = useState("");
   const [recipient, setRecipient] = useState("");
+  const [currentChat, setCurrentChat] = useState();
   const [inputMessage, setInputMessage] = useState("");
   const [chatData, setChatData] = useState([]);
   const clientRef = useRef(null);
@@ -31,17 +33,17 @@ export default function ChatApp() {
         console.log(error);
       }
     }
-    async function fetchMessages() {
-      try {
-        const result = await axios.get(
-          `http://localhost:3001/api/messages/received/${jwtDecode(token).sub}`
-        );
-        setMessages(result.data);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    fetchMessages();
+    // async function fetchMessages() {
+    //   try {
+    //     const result = await axios.get(
+    //       `http://localhost:3001/api/messages/received/${jwtDecode(token).sub}`
+    //     );
+    //     setMessages(result.data);
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // }
+    // fetchMessages();
     fetchChats();
     setSender(jwtDecode(token).sub);
 
@@ -66,9 +68,8 @@ export default function ChatApp() {
             );
           } else {
             const messageExists = messages.some((m) => m.id === id);
-
             if (!messageExists) {
-              setMessages((prevMessages) => [...prevMessages, body]);
+              addMessage(body, setChatData);
             }
           }
         });
@@ -88,11 +89,20 @@ export default function ChatApp() {
   const sendMessage = (event) => {
     event.preventDefault();
     const message = {
+      chat_id: currentChat,
       sender: jwtDecode(token).sub,
-      // recipient: recipient,
-      recipient: "almaz@gmail.com",
+      recipient: recipient,
       content: inputMessage,
+      read: [
+        {
+          id: null,
+          email: jwtDecode(token).sub,
+          username: null,
+          role: null,
+        },
+      ],
     };
+    console.log(message);
     if (clientRef.current && clientRef.current.connected) {
       clientRef.current.publish({
         destination: "/app/message",
@@ -117,14 +127,20 @@ export default function ChatApp() {
   };
   return (
     <main id="chat-main">
-      <ChatSelector setRecipient={setRecipient} chatData={chatData} />
+      <ChatSelector
+        setRecipient={setRecipient}
+        chatData={chatData}
+        setCurrentChat={setCurrentChat}
+      />
       <div className="chat-window">
         <div style={{ overflow: "auto" }}>
-          <ChatMessages
-            messages={messages}
-            recipient={recipient}
-            onDeleteMessage={handleDeleteMessage}
-          />
+          {chatData.map((c) => (
+            <ChatMessages
+              messages={findChatById(chatData, currentChat)?.messageList}
+              recipient={recipient}
+              onDeleteMessage={handleDeleteMessage}
+            />
+          ))}
         </div>
         <div>
           <form className="row form-message" onSubmit={sendMessage}>
