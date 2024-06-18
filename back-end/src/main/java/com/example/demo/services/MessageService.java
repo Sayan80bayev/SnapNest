@@ -7,6 +7,9 @@ import com.example.demo.entities.User;
 import com.example.demo.entities.Chat;
 import com.example.demo.repositories.ChatRepository;
 import com.example.demo.repositories.MessageRepository;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -83,11 +86,11 @@ public class MessageService {
         }
 
         // Add the message to the chat
-        c.getMessages().add(message);
+        // c.getMessages().add(message);
         chatRepository.save(c);
 
         // Save the message
-        // messageRepository.save(message);
+        messageRepository.save(message);
 
         // Convert the message entity to DTO and return it
         return mapToDTO(message);
@@ -154,6 +157,7 @@ public class MessageService {
         return messageRepository.findByRecipient(recipient);
     }
 
+    @Transactional
     public void deleteMessage(Long id) {
         messageRepository.deleteById(id);
     }

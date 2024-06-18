@@ -4,11 +4,15 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+// @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class MessageDTO {
     private Long id;
     private String sender;

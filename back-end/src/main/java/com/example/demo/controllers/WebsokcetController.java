@@ -33,10 +33,8 @@ public class WebsokcetController {
 
     @MessageMapping("/delete")
     public void processDeleteMessage(MessageDTO message) {
-        service.deleteMessage(message.getId());
-
         message.setDeleted(true);
-
+        service.deleteMessage(message.getId());
         String recipient = "/queue/" + message.getRecipient();
         String sender = "/queue/" + message.getSender();
         messagingTemplate.convertAndSend(recipient, message);

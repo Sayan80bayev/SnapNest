@@ -7,7 +7,7 @@ import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { addMessage, findChatById } from "./helper";
+import { addMessage, findChatById, deleteMessage } from "./helper";
 
 export default function ChatApp() {
   const [messages, setMessages] = useState([]);
@@ -63,9 +63,7 @@ export default function ChatApp() {
           const body = JSON.parse(message.body);
           const { id, deleted } = body;
           if (deleted === true) {
-            setMessages((prevMessages) =>
-              prevMessages.filter((m) => m.id !== id)
-            );
+            deleteMessage(body, setChatData);
           } else {
             const messageExists = messages.some((m) => m.id === id);
             if (!messageExists) {
@@ -91,6 +89,7 @@ export default function ChatApp() {
     const message = {
       chat_id: currentChat,
       sender: jwtDecode(token).sub,
+      // recipient: "almaz@gmail.com",
       recipient: recipient,
       content: inputMessage,
       read: [
@@ -114,6 +113,7 @@ export default function ChatApp() {
     }
   };
   const handleDeleteMessage = (message) => {
+    console.log(message);
     if (clientRef.current && clientRef.current.connected) {
       clientRef.current.publish({
         destination: "/app/delete",

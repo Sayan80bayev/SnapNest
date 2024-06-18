@@ -57,7 +57,7 @@ const ChatMessages = ({ messages, recipient, onDeleteMessage }) => {
       setContextMenu({ ...contextMenu, visible: false });
     }
   };
-  console.log(messages);
+  // console.log(messages);
   return (
     <ChatContainer>
       {messages &&

@@ -19,6 +19,27 @@ export const addMessage = (newMessage, setChatData) => {
     });
   });
 };
+export const deleteMessage = (messageDeleting, setChatData) => {
+  setChatData((prevChatData) => {
+    // Map over the previous chat data to find the relevant chat
+    return prevChatData.map((chat) => {
+      if (chat.id === messageDeleting.chat_id) {
+        // Map over the messageList to find the specific message to delete
+        const updatedMessages = chat.messageList.map((message) => {
+          if (message.id === messageDeleting.id) {
+            // Mark the message as deleted
+            return { ...message, deleted: true };
+          }
+          return message;
+        });
+        // Return the updated chat object with the modified messageList
+        return { ...chat, messageList: updatedMessages };
+      }
+      return chat;
+    });
+  });
+};
+
 export const countUnreadMessages = (chat, yourEmail) => {
   let unreadCount = 0;
 
