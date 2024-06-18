@@ -24,12 +24,12 @@ public class WebsokcetController {
         messagingTemplate.convertAndSend(sender, respone);
     }
 
-    // @MessageMapping("/seen")
-    // public void processSeenReceipt(MessageDTO message) {
-    // service.markMessageAsSeen(message.getId());
-    // String sender = "/queue/" + message.getSender();
-    // messagingTemplate.convertAndSend(sender, message);
-    // }
+    @MessageMapping("/read")
+    public void processSeenReceipt(MessageDTO message) {
+        service.markAsRead(message.getId(), message.getRecipient());
+        String sender = "/queue/" + message.getSender();
+        messagingTemplate.convertAndSend(sender, message);
+    }
 
     @MessageMapping("/delete")
     public void processDeleteMessage(MessageDTO message) {

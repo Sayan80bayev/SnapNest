@@ -1,18 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { jwtDecode } from "jwt-decode"; // Импортируем правильно
-import { ContextMenu } from "./ContextMenu"; // Если это ваш кастомный компонент
-import { ChatContainer } from "./ChatContainer"; // Если это ваш кастомный компонент
-import Message from "./Message"; // Если это ваш кастомный компонент
+import { jwtDecode } from "jwt-decode"; // Correct import statement
+import { ContextMenu } from "./ContextMenu"; // Assuming this is your custom component
+import { ChatContainer } from "./ChatContainer"; // Assuming this is your custom component
+import Message from "./Message"; // Assuming this is your custom component
 
-const ChatMessages = ({ messages, recipient, onDeleteMessage }) => {
+const ChatMessages = ({ messages, recipient, onDeleteMessage, markAsRead }) => {
   const [contextMenu, setContextMenu] = useState({
     visible: false,
     position: { x: 0, y: 0 },
     messageIndex: null,
   });
-
+  const [decodedToken, setDecodedToken] = useState();
   const contextMenuRef = useRef(null);
+  const lastMessageRef = useRef(null);
+  const observer = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -30,16 +32,38 @@ const ChatMessages = ({ messages, recipient, onDeleteMessage }) => {
     };
   }, [contextMenu]);
 
-  if (!messages) return <>Loading...</>;
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    try {
+      setDecodedToken(jwtDecode(token));
+    } catch (e) {
+      console.error("Error decoding token:", e);
+      return;
+    }
 
-  const token = localStorage.getItem("authToken");
-  let decodedToken;
-  try {
-    decodedToken = jwtDecode(token);
-  } catch (e) {
-    console.error("Error decoding token:", e);
-    return <>Invalid token</>;
-  }
+    const callback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          markAsRead(messages[messages.length - 1]);
+        }
+      });
+    };
+
+    observer.current = new IntersectionObserver(callback, {
+      root: null,
+      threshold: 1.0,
+    });
+
+    if (lastMessageRef.current) {
+      observer.current.observe(lastMessageRef.current);
+    }
+
+    return () => {
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+    };
+  }, [messages, markAsRead]);
 
   const handleRightClick = (event, index) => {
     event.preventDefault();
@@ -52,19 +76,17 @@ const ChatMessages = ({ messages, recipient, onDeleteMessage }) => {
 
   const handleDeleteMessage = () => {
     if (contextMenu.messageIndex !== null) {
-      console.log(messages[contextMenu.messageIndex]);
       onDeleteMessage(messages[contextMenu.messageIndex]);
       setContextMenu({ ...contextMenu, visible: false });
     }
   };
-  // console.log(messages);
+
   return (
     <ChatContainer>
       {messages &&
         messages.map((message, index) => {
-          const isSender = message.sender === decodedToken.sub;
+          const isSender = message.sender === decodedToken?.sub;
           if (message.deleted) {
-            console.log("Skipping deleted message:", message);
             return null;
           }
 
@@ -74,6 +96,7 @@ const ChatMessages = ({ messages, recipient, onDeleteMessage }) => {
               isSender={isSender}
               onContextMenu={(event) => handleRightClick(event, index)}
               content={message.content}
+              ref={index === messages.length - 1 ? lastMessageRef : null}
             />
           );
         })}

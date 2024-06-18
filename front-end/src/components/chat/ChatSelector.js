@@ -75,6 +75,7 @@ const UnreadCount = styled.div`
 const ChatSelector = ({ chatData, setCurrentChat, setRecipient }) => {
   const [activeChat, setActiveChat] = useState(null);
   const [chatColors, setChatColors] = useState({});
+  const [unreadCount, setUnreadCount] = useState();
   const token = localStorage.getItem("authToken");
   const email = jwtDecode(token).sub;
   useEffect(() => {
@@ -82,6 +83,7 @@ const ChatSelector = ({ chatData, setCurrentChat, setRecipient }) => {
       const colors = {};
       chatData.forEach((chat, index) => {
         colors[chat.username] = getRandomColor();
+        setUnreadCount(countUnreadMessages(chat, email));
       });
       setChatColors(colors);
     }
@@ -125,9 +127,7 @@ const ChatSelector = ({ chatData, setCurrentChat, setRecipient }) => {
             {findChatTitleByParticipantEmail(chat, email).username}
             {chat.preview && <ChatPreview>{chat.preview}</ChatPreview>}
           </ChatTitle>
-          {countUnreadMessages(chat, email) > 0 && (
-            <UnreadCount>{countUnreadMessages(chat, email)}</UnreadCount>
-          )}
+          {unreadCount > 0 && <UnreadCount>{unreadCount}</UnreadCount>}
         </ChatItem>
       ))}
     </ChatSelectorBar>

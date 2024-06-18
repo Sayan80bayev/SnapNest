@@ -96,11 +96,12 @@ public class MessageService {
         return mapToDTO(message);
     }
 
-    // public void markMessageAsSeen(Long messageId) {
-    // Message m = messageRepository.findById(messageId).orElse(null);
-    // m.setRead(true);
-    // messageRepository.save(m);
-    // }
+    public void markAsRead(Long messageId, String email) {
+        User user = userService.findByEmail(email);
+        Message m = messageRepository.findById(messageId).orElse(null);
+        m.getRead().add(user);
+        messageRepository.save(m);
+    }
 
     public MessageDTO mapToDTO(Message message) {
         List<UserDTO> read = null;

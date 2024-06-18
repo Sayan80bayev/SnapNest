@@ -112,6 +112,17 @@ export default function ChatApp() {
       console.error("Client is not connected");
     }
   };
+  const markAsRead = (message) => {
+    console.log(message);
+    if (clientRef.current && clientRef.current.connected) {
+      clientRef.current.publish({
+        destination: "/app/read",
+        body: JSON.stringify(message),
+      });
+    } else {
+      console.error("Client is not connected");
+    }
+  };
   const handleDeleteMessage = (message) => {
     console.log(message);
     if (clientRef.current && clientRef.current.connected) {
@@ -139,6 +150,7 @@ export default function ChatApp() {
               messages={findChatById(chatData, currentChat)?.messageList}
               recipient={recipient}
               onDeleteMessage={handleDeleteMessage}
+              markAsRead={markAsRead}
             />
           ))}
         </div>
