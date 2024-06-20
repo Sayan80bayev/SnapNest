@@ -58,29 +58,35 @@ const ChatMessages = ({ messages, recipient, onDeleteMessage, markAsRead }) => {
   };
 
   const handleScroll = async () => {
-    // console.log("handleScroll called");
-    const messageBubble = lastMessageRef.current;
-    let messageTosSent;
-    try {
-      const messageContent = messageBubble
-        .querySelector(".message-bubble")
-        .textContent.trim();
-      // console.log("Message content:", messageContent);
-    } catch (error) {}
+    if (!chatWindowRef.current || !Array.isArray(messages)) return;
 
-    // console.log("lastMessageRef.current:", lastMessageRef.current);
-    // console.log("chatWindowRef.current:", chatWindowRef.current);
+    const chatWindowPos = chatWindowRef.current.getBoundingClientRect();
+    const visibleMessages = [];
 
-    if (lastMessageRef.current && chatWindowRef.current) {
-      const lastMessagePos = lastMessageRef.current.getBoundingClientRect();
-      const chatWindowPos = chatWindowRef.current.getBoundingClientRect();
+    for (const [index, message] of messages.entries()) {
+      const messageElement = document.getElementById(`message-${message.id}`);
+      if (!messageElement) continue;
 
-      // console.log("Last message position:", lastMessagePos);
-      // console.log("Chat window position:", chatWindowPos);
+      const messagePos = messageElement.getBoundingClientRect();
 
-      if (lastMessagePos.top <= chatWindowPos.bottom) {
-        // console.log("Marking last message as read");
-        const result = await markAsRead(messages[messages.length - 1]);
+      if (
+        messagePos.top <= chatWindowPos.bottom &&
+        !message.read.includes(decodedToken.sub)
+      ) {
+        visibleMessages.push(message);
+      }
+    }
+
+    if (visibleMessages.length > 0) {
+      try {
+        await Promise.all(visibleMessages.map(markAsRead));
+        // console.log(
+        //   `Messages marked as read: ${visibleMessages
+        //     .map((m) => m.id)
+        //     .join(", ")}`
+        // );
+      } catch (error) {
+        console.error("Error marking messages as read:", error);
       }
     }
   };
@@ -107,6 +113,7 @@ const ChatMessages = ({ messages, recipient, onDeleteMessage, markAsRead }) => {
               key={index}
               isSender={isSender}
               onContextMenu={(event) => handleRightClick(event, index)}
+              id={message.id}
               content={message.content}
               ref={index === messages.length - 1 ? lastMessageRef : null}
             />

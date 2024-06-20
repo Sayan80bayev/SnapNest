@@ -71,6 +71,7 @@ export default function ChatApp() {
             const messageExists = chatData.some((chat) =>
               chat.messageList.some((m) => m.id === id)
             );
+            console.log(messageExists);
             if (!messageExists) {
               addMessage(body, setChatData); // Add the message if it doesn't exist
             } else {
@@ -126,7 +127,6 @@ export default function ChatApp() {
     if (clientRef.current && clientRef.current.connected) {
       // Check if the message has already been marked as read
       if (markedAsReadMessages.has(message.id)) {
-        console.log(`Message ${message.id} has already been marked as read`);
         return; // Exit early if message has already been sent
       }
 

@@ -23,8 +23,13 @@ const MessageItem = styled.div`
 `;
 
 const Message = React.forwardRef(
-  ({ isSender, content, onContextMenu }, ref) => (
-    <MessageItem isSender={isSender} onContextMenu={onContextMenu} ref={ref}>
+  ({ isSender, content, id, onContextMenu }, ref) => (
+    <MessageItem
+      isSender={isSender}
+      onContextMenu={onContextMenu}
+      ref={ref}
+      id={`message-${id}`}
+    >
       <div className="message-bubble">
         {content}
         {isSender && (
