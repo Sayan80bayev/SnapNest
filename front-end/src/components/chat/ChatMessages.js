@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import styled from "styled-components";
-import { jwtDecode } from "jwt-decode"; // Correct import statement
-import { ContextMenu } from "./ContextMenu"; // Assuming this is your custom component
-import { ChatContainer } from "./ChatContainer"; // Assuming this is your custom component
-import Message from "./Message"; // Assuming this is your custom component
+import { jwtDecode } from "jwt-decode";
+import { ContextMenu } from "./ContextMenu";
+import { ChatContainer } from "./ChatContainer";
+import Message from "./Message";
 
 const ChatMessages = ({ messages, recipient, onDeleteMessage, markAsRead }) => {
   const [contextMenu, setContextMenu] = useState({
@@ -14,7 +13,7 @@ const ChatMessages = ({ messages, recipient, onDeleteMessage, markAsRead }) => {
   const [decodedToken, setDecodedToken] = useState();
   const contextMenuRef = useRef(null);
   const lastMessageRef = useRef(null);
-  const observer = useRef(null);
+  const chatWindowRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -37,33 +36,10 @@ const ChatMessages = ({ messages, recipient, onDeleteMessage, markAsRead }) => {
     try {
       setDecodedToken(jwtDecode(token));
     } catch (e) {
-      console.error("Error decoding token:", e);
+      console.error("Ошибка декодирования токена:", e);
       return;
     }
-
-    const callback = (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          markAsRead(messages[messages.length - 1]);
-        }
-      });
-    };
-
-    observer.current = new IntersectionObserver(callback, {
-      root: null,
-      threshold: 1.0,
-    });
-
-    if (lastMessageRef.current) {
-      observer.current.observe(lastMessageRef.current);
-    }
-
-    return () => {
-      if (observer.current) {
-        observer.current.disconnect();
-      }
-    };
-  }, [messages, markAsRead]);
+  }, []);
 
   const handleRightClick = (event, index) => {
     event.preventDefault();
@@ -81,8 +57,44 @@ const ChatMessages = ({ messages, recipient, onDeleteMessage, markAsRead }) => {
     }
   };
 
+  const handleScroll = async () => {
+    // console.log("handleScroll called");
+    const messageBubble = lastMessageRef.current;
+    let messageTosSent;
+    try {
+      const messageContent = messageBubble
+        .querySelector(".message-bubble")
+        .textContent.trim();
+      // console.log("Message content:", messageContent);
+    } catch (error) {}
+
+    // console.log("lastMessageRef.current:", lastMessageRef.current);
+    // console.log("chatWindowRef.current:", chatWindowRef.current);
+
+    if (lastMessageRef.current && chatWindowRef.current) {
+      const lastMessagePos = lastMessageRef.current.getBoundingClientRect();
+      const chatWindowPos = chatWindowRef.current.getBoundingClientRect();
+
+      // console.log("Last message position:", lastMessagePos);
+      // console.log("Chat window position:", chatWindowPos);
+
+      if (lastMessagePos.top <= chatWindowPos.bottom) {
+        // console.log("Marking last message as read");
+        const result = await markAsRead(messages[messages.length - 1]);
+      }
+    }
+  };
+
+  useEffect(() => {
+    handleScroll();
+  }, [messages]);
+
   return (
-    <ChatContainer>
+    <ChatContainer
+      ref={chatWindowRef}
+      onScroll={handleScroll}
+      style={{ overflow: "auto" }}
+    >
       {messages &&
         messages.map((message, index) => {
           const isSender = message.sender === decodedToken?.sub;
@@ -102,7 +114,7 @@ const ChatMessages = ({ messages, recipient, onDeleteMessage, markAsRead }) => {
         })}
       {contextMenu.visible && (
         <ContextMenu ref={contextMenuRef} position={contextMenu.position}>
-          <li onClick={handleDeleteMessage}>Delete Message</li>
+          <li onClick={handleDeleteMessage}>Удалить сообщение</li>
         </ContextMenu>
       )}
     </ChatContainer>

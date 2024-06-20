@@ -1,4 +1,6 @@
+import React from "react";
 import styled from "styled-components";
+
 const MessageItem = styled.div`
   display: flex;
   align-items: flex-start;
@@ -20,37 +22,39 @@ const MessageItem = styled.div`
   }
 `;
 
-const Message = ({ isSender, content, onContextMenu }) => (
-  <MessageItem isSender={isSender} onContextMenu={onContextMenu}>
-    <div className="message-bubble">
-      {content}
-      {isSender && (
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{ width: "15px", margin: "5px 0px 0px 5px" }}
-        >
-          <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-          <g
-            id="SVGRepo_tracerCarrier"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          ></g>
-          <g id="SVGRepo_iconCarrier">
-            {" "}
-            <path
-              d="M4 12.6111L8.92308 17.5L20 6.5"
-              stroke="#f0f0f0"
-              stroke-width="2"
+const Message = React.forwardRef(
+  ({ isSender, content, onContextMenu }, ref) => (
+    <MessageItem isSender={isSender} onContextMenu={onContextMenu} ref={ref}>
+      <div className="message-bubble">
+        {content}
+        {isSender && (
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            style={{ width: "15px", margin: "5px 0px 0px 5px" }}
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g
+              id="SVGRepo_tracerCarrier"
               stroke-linecap="round"
               stroke-linejoin="round"
-            ></path>{" "}
-          </g>
-        </svg>
-      )}
-    </div>
-  </MessageItem>
+            ></g>
+            <g id="SVGRepo_iconCarrier">
+              {" "}
+              <path
+                d="M4 12.6111L8.92308 17.5L20 6.5"
+                stroke="#f0f0f0"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>{" "}
+            </g>
+          </svg>
+        )}
+      </div>
+    </MessageItem>
+  )
 );
 
 export default Message;

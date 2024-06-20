@@ -18,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -99,14 +100,14 @@ public class MessageService {
     public void markAsRead(Long messageId, String email) {
         User user = userService.findByEmail(email);
         Message m = messageRepository.findById(messageId).orElse(null);
-        m.getRead().add(user);
+        m.getReaders().add(user);
         messageRepository.save(m);
     }
 
     public MessageDTO mapToDTO(Message message) {
         List<UserDTO> read = null;
         try {
-            read = message.getRead().stream().map(u -> userService.mapToDto(u)).collect(Collectors.toList());
+            read = message.getReaders().stream().map(u -> userService.mapToDto(u)).collect(Collectors.toList());
 
         } catch (Exception e) {
         }
@@ -133,8 +134,8 @@ public class MessageService {
             c = new Chat();
             c.setChatMembers(new ArrayList<>(Arrays.asList(sender, recipient)));
         }
-        List<User> read = messageDTO.getRead().stream().map(u -> userService.mapToEntity(u))
-                .collect(Collectors.toList());
+        Set<User> read = messageDTO.getRead().stream().map(u -> userService.mapToEntity(u))
+                .collect(Collectors.toSet());
 
         return new Message(
                 messageDTO.getId(),

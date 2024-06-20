@@ -7,7 +7,7 @@ import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { addMessage, findChatById, deleteMessage } from "./helper";
+import { addMessage, findChatById, deleteMessage, readMessage } from "./helper";
 
 export default function ChatApp() {
   const [messages, setMessages] = useState([]);
@@ -62,12 +62,19 @@ export default function ChatApp() {
         client.subscribe(`/queue/${jwtDecode(token).sub}`, (message) => {
           const body = JSON.parse(message.body);
           const { id, deleted } = body;
+          console.log(id);
           if (deleted === true) {
             deleteMessage(body, setChatData);
           } else {
-            const messageExists = messages.some((m) => m.id === id);
+            console.log(chatData);
+            // Check if message with the same ID already exists in chatData
+            const messageExists = chatData.some((chat) =>
+              chat.messageList.some((m) => m.id === id)
+            );
             if (!messageExists) {
-              addMessage(body, setChatData);
+              addMessage(body, setChatData); // Add the message if it doesn't exist
+            } else {
+              readMessage(id, jwtDecode(token).sub, setChatData);
             }
           }
         });
@@ -82,7 +89,7 @@ export default function ChatApp() {
         clientRef.current.deactivate();
       }
     };
-  }, [token]);
+  }, [token, chatData]); // Ensure chatData is included in dependencies
 
   const sendMessage = (event) => {
     event.preventDefault();
@@ -112,17 +119,39 @@ export default function ChatApp() {
       console.error("Client is not connected");
     }
   };
-  const markAsRead = (message) => {
-    console.log(message);
+  // Use a set to keep track of messages that have been marked as read
+  const markedAsReadMessages = new Set();
+
+  const markAsRead = async (message) => {
     if (clientRef.current && clientRef.current.connected) {
-      clientRef.current.publish({
-        destination: "/app/read",
-        body: JSON.stringify(message),
-      });
+      // Check if the message has already been marked as read
+      if (markedAsReadMessages.has(message.id)) {
+        console.log(`Message ${message.id} has already been marked as read`);
+        return; // Exit early if message has already been sent
+      }
+
+      if (
+        message.sender !== jwtDecode(token).sub &&
+        !message.read.some((user) => user.email === jwtDecode(token).sub)
+      ) {
+        console.log("Marking message as read:", message);
+        try {
+          // Publish the message to the WebSocket
+          await clientRef.current.publish({
+            destination: "/app/read",
+            body: JSON.stringify(message),
+          });
+          // Add the message ID to the set after successfully marking as read
+          markedAsReadMessages.add(message.id);
+        } catch (error) {
+          console.error("Error marking message as read:", error);
+        }
+      }
     } else {
       console.error("Client is not connected");
     }
   };
+
   const handleDeleteMessage = (message) => {
     console.log(message);
     if (clientRef.current && clientRef.current.connected) {
@@ -144,9 +173,16 @@ export default function ChatApp() {
         setCurrentChat={setCurrentChat}
       />
       <div className="chat-window">
-        <div style={{ overflow: "auto" }}>
+        <div
+          style={{
+            overflow: "auto",
+            display: "flex",
+            flexDirection: "column-reverse",
+          }}
+        >
           {chatData.map((c) => (
             <ChatMessages
+              key={c.id}
               messages={findChatById(chatData, currentChat)?.messageList}
               recipient={recipient}
               onDeleteMessage={handleDeleteMessage}

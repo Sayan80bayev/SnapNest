@@ -28,7 +28,9 @@ public class WebsokcetController {
     public void processSeenReceipt(MessageDTO message) {
         service.markAsRead(message.getId(), message.getRecipient());
         String sender = "/queue/" + message.getSender();
+        String recipient = "/queue/" + message.getRecipient();
         messagingTemplate.convertAndSend(sender, message);
+        messagingTemplate.convertAndSend(recipient, message);
     }
 
     @MessageMapping("/delete")
