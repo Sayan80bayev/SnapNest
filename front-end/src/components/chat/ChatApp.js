@@ -7,6 +7,8 @@ import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import Picker from "@emoji-mart/react";
+import EmojiPicker from "./svg/EmojiPicker";
 import {
   addMessage,
   findChatById,
@@ -29,7 +31,11 @@ export default function ChatApp() {
   const [inputMessage, setInputMessage] = useState("");
   const [chatData, setChatData] = useState([]);
   const clientRef = useRef(null);
-
+  const [emoji, setEmoji] = useState(null);
+  const [isPickerVisible, setPickerVisible] = useState(false);
+  const handleEmojiPick = (emoji) => {
+    setEmoji(emoji);
+  };
   const token = localStorage.getItem("authToken");
   const email = jwtDecode(token).sub;
 
@@ -93,6 +99,7 @@ export default function ChatApp() {
 
   const sendMessage = (event) => {
     event.preventDefault();
+    if (!inputMessage) return;
     const message = {
       chat_id: currentChat,
       sender: sender,
@@ -151,7 +158,26 @@ export default function ChatApp() {
         </div>
         <div>
           <form className="row form-message" onSubmit={sendMessage}>
+            <div className={isPickerVisible ? "d-block" : "d-none"}>
+              <Picker
+                onEmojiSelect={(e) => {
+                  setInputMessage(e.native);
+                  setPickerVisible(!isPickerVisible);
+                }}
+              />
+            </div>
+
             <Skrepka />
+            <button
+              style={{
+                background: "none",
+                border: "none",
+                maxWidth: "max-content",
+              }}
+              onClick={() => setPickerVisible(!isPickerVisible)}
+            >
+              <EmojiPicker />
+            </button>
             <textarea
               cols="30"
               rows="10"
@@ -159,6 +185,11 @@ export default function ChatApp() {
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
             ></textarea>
+            {emoji && (
+              <div>
+                <p>Selected emoji: {emoji}</p>
+              </div>
+            )}
             <button type="submit" className="btn btn-primary" id="send">
               <Send />
             </button>
