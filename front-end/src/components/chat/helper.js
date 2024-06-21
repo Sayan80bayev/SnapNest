@@ -62,13 +62,14 @@ export const readMessage = (messageId, userEmail, setChatData) => {
   setChatData((prevChatData) => {
     return prevChatData.map((chat) => {
       const updatedMessages = chat.messageList.map((message) => {
-        if (message.id === messageId && message.recipient === userEmail) {
+        if (message.id == messageId) {
           // Check if the user's email is not already in read array
-          if (!message.read?.some((r) => r.email === userEmail)) {
-            // Add user's email to read array
-            const updatedRead = [...(message.read || []), { email: userEmail }];
-            return { ...message, read: updatedRead };
-          }
+          // Add user's email to read array
+          const updatedRead = [
+            ...(message.read || []),
+            { email: message.recipient },
+          ];
+          return { ...message, read: updatedRead };
         }
         return message;
       });

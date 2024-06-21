@@ -23,7 +23,7 @@ const MessageItem = styled.div`
 `;
 
 const Message = React.forwardRef(
-  ({ isSender, content, id, onContextMenu }, ref) => (
+  ({ isSender, content, id, onContextMenu, read }, ref) => (
     <MessageItem
       isSender={isSender}
       onContextMenu={onContextMenu}
@@ -32,7 +32,31 @@ const Message = React.forwardRef(
     >
       <div className="message-bubble">
         {content}
-        {isSender && (
+        {read >= 1 && isSender ? (
+          <svg
+            style={{ width: "15px", margin: "5px 0px 0px 5px" }}
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></g>
+            <g id="SVGRepo_iconCarrier">
+              {" "}
+              <path
+                d="M4 14L9 19L20 8M6 8.88889L9.07692 12L16 5"
+                stroke="#f2e5f6"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>{" "}
+            </g>
+          </svg>
+        ) : (
           <svg
             viewBox="0 0 24 24"
             fill="none"

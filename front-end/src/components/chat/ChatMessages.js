@@ -80,11 +80,6 @@ const ChatMessages = ({ messages, recipient, onDeleteMessage, markAsRead }) => {
     if (visibleMessages.length > 0) {
       try {
         await Promise.all(visibleMessages.map(markAsRead));
-        // console.log(
-        //   `Messages marked as read: ${visibleMessages
-        //     .map((m) => m.id)
-        //     .join(", ")}`
-        // );
       } catch (error) {
         console.error("Error marking messages as read:", error);
       }
@@ -115,6 +110,7 @@ const ChatMessages = ({ messages, recipient, onDeleteMessage, markAsRead }) => {
               onContextMenu={(event) => handleRightClick(event, index)}
               id={message.id}
               content={message.content}
+              read={message.read.length}
               ref={index === messages.length - 1 ? lastMessageRef : null}
             />
           );
