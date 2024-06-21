@@ -44,12 +44,16 @@ export const countUnreadMessages = (chat, yourEmail) => {
   let unreadCount = 0;
 
   for (let message of chat.messageList) {
-    if (message.recipient === yourEmail && !message.read?.includes(yourEmail)) {
+    const hasBeenRead = message.read?.some(
+      (readEntry) => readEntry.email === yourEmail
+    );
+    if (message.recipient === yourEmail && !hasBeenRead) {
       unreadCount++;
     }
   }
   return unreadCount;
 };
+
 export const findChatById = (chats, chatId) => {
   return chats.find((chat) => chat.id === chatId);
 };

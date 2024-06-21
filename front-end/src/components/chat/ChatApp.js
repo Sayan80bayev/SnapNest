@@ -165,6 +165,7 @@ export default function ChatApp() {
       console.error("Client is not connected");
     }
   };
+  console.log(chatData);
   return (
     <main id="chat-main">
       <ChatSelector
