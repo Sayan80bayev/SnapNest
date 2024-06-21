@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { findChatTitleByParticipantEmail, countUnreadMessages } from "./helper";
+import {
+  findChatTitleByParticipantEmail,
+  countUnreadMessages,
+} from "./helpers/helper";
 import { jwtDecode } from "jwt-decode";
 
 const getRandomColor = () => {
