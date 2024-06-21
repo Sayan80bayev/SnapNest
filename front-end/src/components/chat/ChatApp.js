@@ -130,6 +130,14 @@ export default function ChatApp() {
     console.log(message);
     deleteMessageWS(clientRef, message);
   };
+  const handleEmojiSelect = (emoji) => {
+    setInputMessage((prevMessage) => prevMessage + emoji.native);
+  };
+
+  const togglePicker = (event) => {
+    event.preventDefault();
+    setPickerVisible(!isPickerVisible);
+  };
   console.log(chatData);
   return (
     <main id="chat-main">
@@ -159,14 +167,8 @@ export default function ChatApp() {
         <div>
           <form className="row form-message" onSubmit={sendMessage}>
             <div className={isPickerVisible ? "d-block" : "d-none"}>
-              <Picker
-                onEmojiSelect={(e) => {
-                  setInputMessage(e.native);
-                  setPickerVisible(!isPickerVisible);
-                }}
-              />
+              <Picker onEmojiSelect={handleEmojiSelect} />
             </div>
-
             <Skrepka />
             <button
               style={{
@@ -174,13 +176,14 @@ export default function ChatApp() {
                 border: "none",
                 maxWidth: "max-content",
               }}
-              onClick={() => setPickerVisible(!isPickerVisible)}
+              onClick={togglePicker}
             >
               <EmojiPicker />
             </button>
             <textarea
               cols="30"
               rows="10"
+              id=""
               className="inputMessage"
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
